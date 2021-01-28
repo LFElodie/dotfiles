@@ -1,0 +1,29 @@
+- defaults:
+    link:
+      relink: true
+      create: true
+      force: true
+
+- clean: ['~']
+
+- brew:
+    - neovim
+    - autojump
+    - ranger
+    - tmux
+    - fzf
+
+- shell:
+  - [git submodule update --init --recursive, Installing submodules]
+  - [bash set_git.sh, Setting git]
+
+- link:
+    ~/.tmux.conf: tmux.conf
+    ~/.zshrc: zsh/zshrc
+    ~/.oh-my-zsh/custom/plugins/:
+        glob: true
+        path: zsh/plugins/*
+    ~/.config/nvim/init.vim: init.vim
+    ~/.config/ranger: ranger
+    ~/.gitignore_global: gitignore_global
+

@@ -1,0 +1,48 @@
+export LANG='en_US.UTF-8'
+export LANGUAGE='en_US:en'
+export LC_ALL='en_US.UTF-8'
+export TERM=xterm-256color
+
+##### Zsh/Oh-my-Zsh Configuration
+export ZSH="$HOME/.oh-my-zsh"
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
+path=('/opt/homebrew/bin' "/Library/Developer/CommandLineTools/usr/bin" $path)
+export PATH
+
+[ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
+
+ZSH_THEME="agnoster"
+plugins=(
+    git
+    zsh-autosuggestions
+    zsh-completions
+    zsh-syntax-highlighting
+    autojump
+    fzf
+)
+
+
+source $ZSH/oh-my-zsh.sh
+
+alias gs="git status"
+alias s="tmux"
+alias dkps="docker ps"
+alias dkpa="docker ps -a"
+alias dki="docker images"
+alias dka="docker attach"
+alias dkrm='docker rm'
+alias dkrmi='docker rmi'
+alias vim='nvim'
+alias typora="open -a typora"
+
+export MYZSHRC="$HOME/.zshrc"
+export MYTMUXCONF="$HOME/.tmux.conf"
+export MYVIMRC="$HOME/.config/nvim/init.vim"
+
+export VISUAL=nvim
+export EDITOR=nvim
+
+
+
