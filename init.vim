@@ -26,8 +26,11 @@ Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 
-Plug 'itchyny/lightline.vim'
+" Appearance
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'gruvbox-community/gruvbox'
+
 Plug 'jiangmiao/auto-pairs'
 Plug 'kien/rainbow_parentheses.vim'
 Plug 'tpope/vim-surround'
@@ -55,6 +58,13 @@ Plug 'roxma/nvim-yarp'
 Plug 'ncm2/ncm2-jedi'
 Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-path'
+
+" C++
+Plug 'ncm2/ncm2-pyclang'
+Plug 'octol/vim-cpp-enhanced-highlight'
+
+" Linter
+Plug 'dense-analysis/ale'
 
 call plug#end()
 
@@ -87,6 +97,29 @@ let ncm2#complete_length = [[1, 1]]
 inoremap <c-c> <ESC>
 inoremap <expr> <CR> (pumvisible() ? "\<c-y>" : "\<CR>")
 inoremap <expr> <Tab> pumvisible() ? "\<C-y>" : "\<Tab>"
+let g:ncm2_pyclang#library_path = '/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'
+
+" }}}
+
+" ALE {{{
+
+let g:ale_linters = {
+\   'c++': ['gcc', 'cppcheck'],
+\   'c': ['gcc', 'cppcheck'],
+\   'python': ['flake8', 'pylint'],
+\   'csh': ['shell'],
+\   'zsh': ['shell'],
+\}
+
+let g:ale_linters_explicit = 1
+let g:ale_completion_delay = 500
+let g:ale_echo_delay = 20
+let g:ale_lint_delay = 500
+let g:ale_echo_msg_format = '[%linter%] %code: %%s'
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_insert_leave = 1
+let g:airline#extensions#ale#enabled = 1
+let g:ale_cpp_cc_executable='gcc'
 
 " }}}
 
@@ -96,42 +129,11 @@ let NERDTreeShowHidden=1
 
 " }}}
 
-" Lightline {{{
+" Airline {{{
 
-let g:lightline = {
-    \ 'active': {
-    \   'left': [ [ 'mode', 'paste'  ],
-    \             [ 'gitbranch', 'readonly', 'filename', 'modified', 'kitestatus'  ] ],
-    \   'right': [ [ 'lineinfo' ],
-    \              [ 'percent' ],
-    \              [ 'fileformat', 'fileencoding', 'filetype'] ],
-    \ },
-    \ 'component_function': {
-    \   'gitbranch': 'FugitiveHead',
-    \   'kitestatus': 'kite#statusline',
-    \   'filename': 'LightlineFilename',
-    \   'fileformat': 'LightlineFileformat',
-    \   'filetype': 'LightlineFiletype',
-    \ },
-    \ }
-
-function! LightlineFilename()
-    let path = expand('%:p')
-    let gitpath = fnamemodify(get(b:, 'git_dir'), ':h:h')
-    if path[:len(gitpath)-1] ==# gitpath
-        let path = path[len(gitpath)+1:]
-        return path
-    endif
-    return fnamemodify(path, ":~")
-endfunction
-
-function! LightlineFileformat()
-  return winwidth(0) > 70 ? &fileformat : ''
-endfunction
-
-function! LightlineFiletype()
-  return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
-endfunction
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme='solarized'
+let g:airline_solarized_bg='dark'
 
 " }}}
 
@@ -355,6 +357,9 @@ xnoremap J :move '>+1'<cr>gv-gv
 nnoremap <silent> <leader>tn :tabnew<cr>
 nnoremap <silent> <leader>tc :tabclose<cr>
 
+nnoremap <silent> <leader>bn :bn<CR>
+nnoremap <silent> <leader>bp :bp<CR>
+
 vnoremap  <leader>y  "+y
 nnoremap  <leader>Y  "+yg_
 nnoremap  <leader>y  "+y
@@ -366,6 +371,7 @@ vnoremap <leader>p "+p
 vnoremap <leader>P "+P
 
 nmap <leader>gs :G<CR>
+nmap <leader>gd :Gvdiffsplit<CR>
 nmap <leader>gf :diffget //2<CR>
 nmap <leader>gj :diffget //3<CR>
 
