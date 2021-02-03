@@ -7,6 +7,11 @@ if empty(glob('~/.config/nvim/autoload/plug.vim'))
     silent !sudo pip3 install flake8 autopep8
 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
+
+if empty(glob('~/.vim/autoload/plug.vim'))
+	silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+endif
+
 " }}}
 
 " Global Virables {{{
@@ -40,7 +45,9 @@ Plug 'preservim/nerdtree'
 Plug 'francoiscabrol/ranger.vim'
 Plug 'ryanoasis/vim-devicons'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
-Plug 'sillybun/vim-repl'
+
+" Debug
+Plug 'puremourning/vimspector'
 
 " Python
 "Plug 'tell-k/vim-autopep8'
@@ -145,22 +152,16 @@ let g:airline_solarized_bg='dark'
 
 " }}}
 
-" auto format {{{
+" For Debug: vimspector {{{
 
-let g:autopep8_disable_show_diff=1
-autocmd BufWritePost *.py call flake8#Flake8()
-"autocmd FileType python noremap <buffer> <F8> :call Autopep8()<CR>
-noremap <F8> :Autoformat<CR>
-
-" }}}
-
-" REPL for Python {{{
-
-let g:repl_position = 3
-nnoremap <leader>r :REPLToggle<Cr>
-autocmd Filetype python nnoremap <F12> <Esc>:REPLDebugStopAtCurrentLine<Cr>
-autocmd Filetype python nnoremap <F10> <Esc>:REPLPDBN<Cr>
-autocmd Filetype python nnoremap <F11> <Esc>:REPLPDBS<Cr>
+nmap <F4> :VimspectorReset<Cr>
+nmap <F5> <Plug>VimspectorContinue
+nmap <F6> <Plug>VimspectorRestart
+nmap <F9> <Plug>VimspectorToggleBreakpoint
+nmap <F10> <Plug>VimspectorStepOver
+nmap <F11> <Plug>VimspectorStepInto
+nmap <F12> <Plug>VimspectorStepOut
+let g:vimspector_install_gadgets = ['debugpy', 'vscode-cpptools']
 
 " }}}
 
@@ -284,7 +285,7 @@ autocmd BufWritePost $MYVIMRC source $MYVIMRC
 nnoremap <esc> :noh<return><esc>
 nnoremap <esc>^[ <esc>^[
 
-map <F5> :call CompileRunGcc()<CR>
+map <F2> :call CompileRunGcc()<CR>
 func! CompileRunGcc()
         exec "w"
         if &filetype == 'c'
