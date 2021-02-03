@@ -43,7 +43,7 @@ Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'sillybun/vim-repl'
 
 " Python
-Plug 'tell-k/vim-autopep8'
+"Plug 'tell-k/vim-autopep8'
 Plug 'nvie/vim-flake8'
 
 " Markdown
@@ -58,6 +58,9 @@ Plug 'roxma/nvim-yarp'
 Plug 'ncm2/ncm2-jedi'
 Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-path'
+
+" Auto format
+Plug 'Chiel92/vim-autoformat'
 
 " C++
 Plug 'ncm2/ncm2-pyclang'
@@ -111,6 +114,11 @@ let g:ale_linters = {
 \   'zsh': ['shell'],
 \}
 
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\}
+
+let g:ale_fix_on_save = 1
 let g:ale_linters_explicit = 1
 let g:ale_completion_delay = 500
 let g:ale_echo_delay = 20
@@ -141,7 +149,8 @@ let g:airline_solarized_bg='dark'
 
 let g:autopep8_disable_show_diff=1
 autocmd BufWritePost *.py call flake8#Flake8()
-autocmd FileType python noremap <buffer> <F8> :call Autopep8()<CR>
+"autocmd FileType python noremap <buffer> <F8> :call Autopep8()<CR>
+noremap <F8> :Autoformat<CR>
 
 " }}}
 
@@ -378,4 +387,3 @@ nmap <leader>gj :diffget //3<CR>
 map <F3> :NERDTreeToggle<CR>
 
 " }}}
-
