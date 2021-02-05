@@ -29,7 +29,6 @@ call plug#begin(g:plugins_install_path)
 " Git
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
-Plug 'Xuyuanp/nerdtree-git-plugin'
 
 " Appearance
 Plug 'vim-airline/vim-airline'
@@ -41,7 +40,6 @@ Plug 'kien/rainbow_parentheses.vim'
 Plug 'tpope/vim-surround'
 Plug 'Yggdroot/indentLine'
 Plug 'preservim/nerdcommenter'
-Plug 'preservim/nerdtree'
 Plug 'francoiscabrol/ranger.vim'
 Plug 'ryanoasis/vim-devicons'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
@@ -384,7 +382,5 @@ nmap <leader>gs :G<CR>
 nmap <leader>gd :Gvdiffsplit<CR>
 nmap <leader>gf :diffget //2<CR>
 nmap <leader>gj :diffget //3<CR>
-
-map <F3> :NERDTreeToggle<CR>
 
 " }}}
