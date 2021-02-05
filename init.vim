@@ -111,20 +111,20 @@ let g:ncm2_pyclang#library_path = '/Library/Developer/CommandLineTools/usr/lib/l
 
 " ALE {{{
 
-let g:ale_linters = {
-\   'c++': ['gcc', 'cppcheck'],
-\   'c': ['gcc', 'cppcheck'],
-\   'python': ['flake8', 'pylint'],
-\   'csh': ['shell'],
-\   'zsh': ['shell'],
-\}
+"let g:ale_linters = {
+"\   'c++': ['clang++', 'cppcheck'],
+"\   'c': ['clang++', 'cppcheck'],
+"\   'python': ['flake8', 'pylint'],
+"\   'csh': ['shell'],
+"\   'zsh': ['shell'],
+"\}
 
 let g:ale_fixers = {
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
 \}
 
 let g:ale_fix_on_save = 1
-let g:ale_linters_explicit = 1
+"let g:ale_linters_explicit = 1
 let g:ale_completion_delay = 500
 let g:ale_echo_delay = 20
 let g:ale_lint_delay = 500
@@ -132,13 +132,6 @@ let g:ale_echo_msg_format = '[%linter%] %code: %%s'
 let g:ale_lint_on_text_changed = 'normal'
 let g:ale_lint_on_insert_leave = 1
 let g:airline#extensions#ale#enabled = 1
-let g:ale_cpp_cc_executable='gcc'
-
-" }}}
-
-" NERDTree {{{
-
-let NERDTreeShowHidden=1
 
 " }}}
 
@@ -152,14 +145,16 @@ let g:airline_solarized_bg='dark'
 
 " For Debug: vimspector {{{
 
-nmap <F4> :VimspectorReset<Cr>
+nmap <F3> :VimspectorReset<Cr>
+nmap <F4> <Plug>VimspectorRestart
 nmap <F5> <Plug>VimspectorContinue
-nmap <F6> <Plug>VimspectorRestart
+nmap <F6> <Plug>VimspectorPause
+nmap <F8> <Plug>VimspectorAddFunctionBreakpoint
 nmap <F9> <Plug>VimspectorToggleBreakpoint
 nmap <F10> <Plug>VimspectorStepOver
 nmap <F11> <Plug>VimspectorStepInto
 nmap <F12> <Plug>VimspectorStepOut
-let g:vimspector_install_gadgets = ['debugpy', 'vscode-cpptools']
+let g:vimspector_install_gadgets = ['debugpy', 'vscode-cpptools', 'CodeLLDB']
 
 " }}}
 
@@ -287,10 +282,10 @@ map <F2> :call CompileRunGcc()<CR>
 func! CompileRunGcc()
         exec "w"
         if &filetype == 'c'
-                exec "!g++ % -o %<"
+                exec "!clang % -o %<"
                 exec "!time ./%<"
         elseif &filetype == 'cpp'
-                exec "!g++ % -o %<"
+                exec "!clang++ % -o %< -std=c++11"
                 exec "!time ./%<"
         elseif &filetype == 'java'
                 exec "!javac %"
