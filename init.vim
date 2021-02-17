@@ -35,12 +35,16 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'gruvbox-community/gruvbox'
 
+" Tools
 Plug 'jiangmiao/auto-pairs'
 Plug 'kien/rainbow_parentheses.vim'
 Plug 'tpope/vim-surround'
 Plug 'Yggdroot/indentLine'
 Plug 'preservim/nerdcommenter'
 Plug 'francoiscabrol/ranger.vim'
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
 Plug 'ryanoasis/vim-devicons'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 
@@ -75,96 +79,6 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'dense-analysis/ale'
 
 call plug#end()
-
-" }}}
-
-" Plugins Settings {{{
-
-" RainbowParentheses {{{
-au VimEnter * RainbowParenthesesToggle
-au Syntax * RainbowParenthesesLoadRound
-au Syntax * RainbowParenthesesLoadSquare
-au Syntax * RainbowParenthesesLoadBraces
-
-" }}}
-
-" Auto complete  {{{
-
-" kite
-let g:kite_tab_complete=1
-let g:kite_supported_languages = ['*']
-set belloff+=ctrlg
-set completeopt+=menuone   " show the popup menu even when there is only 1 match
-set completeopt+=noinsert  " don't insert any text until user chooses a match
-set completeopt-=longest   " don't insert the longest common text
-set completeopt-=preview
-
-" ncm2
-autocmd BufEnter * call ncm2#enable_for_buffer()
-let ncm2#complete_length = [[1, 1]]
-inoremap <c-c> <ESC>
-inoremap <expr> <CR> (pumvisible() ? "\<c-y>" : "\<CR>")
-inoremap <expr> <Tab> pumvisible() ? "\<C-y>" : "\<Tab>"
-let g:ncm2_pyclang#library_path = '/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'
-
-" }}}
-
-" ALE {{{
-
-"let g:ale_linters = {
-"\   'c++': ['clang++', 'cppcheck'],
-"\   'c': ['clang++', 'cppcheck'],
-"\   'python': ['flake8', 'pylint'],
-"\   'csh': ['shell'],
-"\   'zsh': ['shell'],
-"\}
-
-let g:ale_fixers = {
-\   '*': ['remove_trailing_lines', 'trim_whitespace'],
-\}
-
-let g:ale_fix_on_save = 1
-"let g:ale_linters_explicit = 1
-let g:ale_completion_delay = 500
-let g:ale_echo_delay = 20
-let g:ale_lint_delay = 500
-let g:ale_echo_msg_format = '[%linter%] %code: %%s'
-let g:ale_lint_on_text_changed = 'normal'
-let g:ale_lint_on_insert_leave = 1
-let g:airline#extensions#ale#enabled = 1
-
-" }}}
-
-" Airline {{{
-
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_theme='solarized'
-let g:airline_solarized_bg='dark'
-
-" }}}
-
-" For Debug: vimspector {{{
-
-nmap <F3> :VimspectorReset<Cr>
-nmap <F4> <Plug>VimspectorRestart
-nmap <F5> <Plug>VimspectorContinue
-nmap <F6> <Plug>VimspectorPause
-nmap <F8> <Plug>VimspectorAddFunctionBreakpoint
-nmap <F9> <Plug>VimspectorToggleBreakpoint
-nmap <F10> <Plug>VimspectorStepOver
-nmap <F11> <Plug>VimspectorStepInto
-nmap <F12> <Plug>VimspectorStepOut
-let g:vimspector_install_gadgets = ['debugpy', 'vscode-cpptools', 'CodeLLDB']
-
-" }}}
-
-" Markdown {{{
-
-let g:vim_markdown_math = 1
-let g:vim_markdown_folding_level = 6
-let g:vim_markdown_conceal = 0
-
-" }}}
 
 " }}}
 
@@ -271,6 +185,106 @@ set noswapfile
 
 " }}}
 
+" Plugins Settings {{{
+
+" RainbowParentheses {{{
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
+
+" }}}
+
+" Auto complete  {{{
+
+" kite
+let g:kite_tab_complete=1
+let g:kite_supported_languages = ['*']
+set belloff+=ctrlg
+set completeopt+=menuone   " show the popup menu even when there is only 1 match
+set completeopt+=noinsert  " don't insert any text until user chooses a match
+set completeopt-=longest   " don't insert the longest common text
+set completeopt-=preview
+
+" ncm2
+autocmd BufEnter * call ncm2#enable_for_buffer()
+let ncm2#complete_length = [[1, 1]]
+inoremap <c-c> <ESC>
+inoremap <expr> <CR> (pumvisible() ? "\<c-y>" : "\<CR>")
+inoremap <expr> <Tab> pumvisible() ? "\<C-y>" : "\<Tab>"
+let g:ncm2_pyclang#library_path = '/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'
+
+" }}}
+
+" ALE {{{
+
+"let g:ale_linters = {
+"\   'c++': ['clang++', 'cppcheck'],
+"\   'c': ['clang++', 'cppcheck'],
+"\   'python': ['flake8', 'pylint'],
+"\   'csh': ['shell'],
+"\   'zsh': ['shell'],
+"\}
+
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\}
+
+let g:ale_fix_on_save = 1
+"let g:ale_linters_explicit = 1
+let g:ale_completion_delay = 500
+let g:ale_echo_delay = 20
+let g:ale_lint_delay = 500
+let g:ale_echo_msg_format = '[%linter%] %code: %%s'
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_insert_leave = 1
+let g:airline#extensions#ale#enabled = 1
+
+" }}}
+
+" Airline {{{
+
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme='solarized'
+let g:airline_solarized_bg='dark'
+
+" }}}
+
+" For Debug: vimspector {{{
+
+nmap <F3> :VimspectorReset<Cr>
+nmap <F4> <Plug>VimspectorRestart
+nmap <F5> <Plug>VimspectorContinue
+nmap <F6> <Plug>VimspectorPause
+nmap <F8> <Plug>VimspectorAddFunctionBreakpoint
+nmap <F9> <Plug>VimspectorToggleBreakpoint
+nmap <F10> <Plug>VimspectorStepOver
+nmap <F11> <Plug>VimspectorStepInto
+nmap <F12> <Plug>VimspectorStepOut
+let g:vimspector_install_gadgets = ['debugpy', 'vscode-cpptools', 'CodeLLDB']
+
+" }}}
+
+" Markdown {{{
+
+let g:vim_markdown_math = 1
+let g:vim_markdown_folding_level = 6
+let g:vim_markdown_conceal = 0
+
+" }}}
+
+" Telescope {{{
+
+" Find files using Telescope command-line sugar.
+nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+
+" }}}
+
+" }}}
+
 " Key binding and autocmd {{{
 
 autocmd BufWritePost $MYVIMRC source $MYVIMRC
@@ -319,7 +333,6 @@ map <C-a> <Home>
 map <C-e> <End>
 map Y y$
 nnoremap U <C-r>
-cmap w!! w !sudo tee >/dev/null %
 nnoremap Q :q<cr>
 nnoremap <space> za
 
