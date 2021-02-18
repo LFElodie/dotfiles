@@ -76,9 +76,6 @@ Plug 'Chiel92/vim-autoformat'
 "Plug 'ncm2/ncm2-pyclang'
 "Plug 'octol/vim-cpp-enhanced-highlight'
 
-" Linter
-Plug 'dense-analysis/ale'
-
 call plug#end()
 
 " }}}
@@ -199,7 +196,7 @@ au Syntax * RainbowParenthesesLoadBraces
 " Auto complete  {{{
 
 let g:coc_global_extensions = ['coc-clangd', 'coc-snippets', 'coc-python',
-            \ 'coc-json', 'coc-git', 'coc-sh', 'coc-highlight']
+            \ 'coc-json', 'coc-git', 'coc-sh', 'coc-highlight', 'coc-eslint']
 
 " TextEdit might fail if hidden is not set.
 set hidden
@@ -382,32 +379,6 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
 " }}}
 
-" ALE {{{
-
-"let g:ale_linters = {
-            "\   'c++': ['clang++', 'cppcheck'],
-            "\   'c': ['clang++', 'cppcheck'],
-            "\   'python': ['flake8', 'pylint'],
-            "\   'csh': ['shell'],
-            "\   'zsh': ['shell'],
-"\}
-
-let g:ale_fixers = {
-            \   '*': ['remove_trailing_lines', 'trim_whitespace'],
-            \}
-
-let g:ale_fix_on_save = 1
-"let g:ale_linters_explicit = 1
-let g:ale_completion_delay = 500
-let g:ale_echo_delay = 20
-let g:ale_lint_delay = 500
-let g:ale_echo_msg_format = '[%linter%] %code: %%s'
-let g:ale_lint_on_text_changed = 'normal'
-let g:ale_lint_on_insert_leave = 1
-let g:airline#extensions#ale#enabled = 1
-
-" }}}
-
 " Airline {{{
 
 let g:airline#extensions#tabline#enabled = 1
@@ -461,28 +432,17 @@ nnoremap <esc>^[ <esc>^[
 map <F2> :call CompileRunGcc()<CR>
 func! CompileRunGcc()
     exec "w"
+    :rightbelow vsplit
     if &filetype == 'c'
         exec "!clang % -o %<"
-        exec "!time ./%<"
+		:term time ./%<
     elseif &filetype == 'cpp'
         exec "!clang++ % -o %< -std=c++11"
-        exec "!time ./%<"
-    elseif &filetype == 'java'
-        exec "!javac %"
-        exec "!time java %<"
+		:term time ./%<
     elseif &filetype == 'sh'
-        :!time bash %
+		:term time bash %
     elseif &filetype == 'python'
-        "exec "!clear":
-        exec "!time python3 %"
-    elseif &filetype == 'html'
-        exec "!firefox % &"
-    elseif &filetype == 'go'
-        " exec "!go build %<"
-        exec "!time go run %"
-    elseif &filetype == 'mkd'
-        exec "!~/.vim/markdown.pl % > %.html &"
-        exec "!firefox %.html &"
+		:term time python3 %
     endif
 endfunc
 
@@ -555,5 +515,7 @@ nmap <leader>gs :G<CR>
 nmap <leader>gd :Gvdiffsplit<CR>
 nmap <leader>gf :diffget //2<CR>
 nmap <leader>gj :diffget //3<CR>
+
+tnoremap <Esc> <C-\><C-n>
 
 " }}}
