@@ -41,7 +41,6 @@ Plug 'kien/rainbow_parentheses.vim'
 Plug 'tpope/vim-surround'
 Plug 'Yggdroot/indentLine'
 Plug 'preservim/nerdcommenter'
-Plug 'francoiscabrol/ranger.vim'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
@@ -51,30 +50,12 @@ Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 " Debug
 Plug 'puremourning/vimspector'
 
-" Python
-"Plug 'tell-k/vim-autopep8'
-Plug 'nvie/vim-flake8'
-
 " Markdown
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 
-
 " Auto complete
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-"Plug 'kiteco/vim-plugin'
-"Plug 'ncm2/ncm2'
-"Plug 'roxma/nvim-yarp'
-"Plug 'ncm2/ncm2-jedi'
-"Plug 'ncm2/ncm2-bufword'
-"Plug 'ncm2/ncm2-path'
-
-" Auto format
-Plug 'Chiel92/vim-autoformat'
-
-" C++
-"Plug 'ncm2/ncm2-pyclang'
-"Plug 'octol/vim-cpp-enhanced-highlight'
 
 call plug#end()
 
@@ -359,23 +340,6 @@ nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
 nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
-
-" kite
-"let g:kite_tab_complete=1
-"let g:kite_supported_languages = ['*']
-"set belloff+=ctrlg
-"set completeopt+=menuone   " show the popup menu even when there is only 1 match
-"set completeopt+=noinsert  " don't insert any text until user chooses a match
-"set completeopt-=longest   " don't insert the longest common text
-"set completeopt-=preview
-
-" ncm2
-"autocmd BufEnter * call ncm2#enable_for_buffer()
-"let ncm2#complete_length = [[1, 1]]
-"inoremap <c-c> <ESC>
-"inoremap <expr> <CR> (pumvisible() ? "\<c-y>" : "\<CR>")
-"inoremap <expr> <Tab> pumvisible() ? "\<C-y>" : "\<Tab>"
-"let g:ncm2_pyclang#library_path = '/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'
 
 " }}}
 
