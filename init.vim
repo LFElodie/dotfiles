@@ -107,9 +107,14 @@ set background=dark
 
 " Tabs and Spaces {{{
 
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+
+autocmd FileType python set tabstop=4
+autocmd FileType python set softtabstop=4
+autocmd FileType python set shiftwidth=4
+
 set autoindent smartindent shiftround
 set expandtab
 
@@ -397,6 +402,7 @@ map <F2> :call CompileRunGcc()<CR>
 func! CompileRunGcc()
     exec "w"
     :rightbelow vsplit
+    :vertical resize -15
     if &filetype == 'c'
         exec "!clang % -o %<"
 		:term time ./%<
@@ -453,7 +459,7 @@ nnoremap <c-w>l :rightbelow vsplit <cr>
 
 nnoremap <Up> :resize +2<cr>
 nnoremap <Down> :resize -2<cr>
-nnoremap <Left> :vertical resize +2<cr>
+nnoremap <Left> :vertical resize -2<cr>
 nnoremap <Right> :vertical resize +2<cr>
 
 xnoremap K :move '<-2'<cr>gv-gv
