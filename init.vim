@@ -36,7 +36,6 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'gruvbox-community/gruvbox'
 
 " Tools
-Plug 'jiangmiao/auto-pairs'
 Plug 'kien/rainbow_parentheses.vim'
 Plug 'tpope/vim-surround'
 Plug 'Yggdroot/indentLine'
@@ -50,12 +49,10 @@ Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 " Debug
 Plug 'puremourning/vimspector'
 
-" Markdown
-Plug 'godlygeek/tabular'
-Plug 'plasticboy/vim-markdown'
-
 " Auto complete
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+Plug 'octol/vim-cpp-enhanced-highlight'
 
 call plug#end()
 
@@ -116,6 +113,7 @@ autocmd FileType python set softtabstop=4
 autocmd FileType python set shiftwidth=4
 
 set autoindent smartindent shiftround
+set cindent
 set expandtab
 
 " }}}
@@ -181,8 +179,12 @@ au Syntax * RainbowParenthesesLoadBraces
 
 " Auto complete  {{{
 
-let g:coc_global_extensions = ['coc-clangd', 'coc-snippets', 'coc-python',
-            \ 'coc-json', 'coc-git', 'coc-sh', 'coc-highlight', 'coc-eslint']
+let g:coc_global_extensions = [
+      \'coc-clangd', 'coc-python', 'coc-json', 'coc-cmake',
+      \'coc-git', 'coc-sh', 'coc-markdownlint',
+      \'coc-snippets', 'coc-highlight', 'coc-eslint', 'coc-pairs',
+      \'coc-prettier',
+      \]
 
 " TextEdit might fail if hidden is not set.
 set hidden
@@ -404,10 +406,10 @@ func! CompileRunGcc()
     :rightbelow vsplit
     :vertical resize -15
     if &filetype == 'c'
-        exec "!clang % -o %<"
+        exec "!gcc % -o %<"
 		:term time ./%<
     elseif &filetype == 'cpp'
-        exec "!clang++ % -o %< -std=c++11"
+        exec "!g++ % -o %< -std=c++17"
 		:term time ./%<
     elseif &filetype == 'sh'
 		:term time bash %
