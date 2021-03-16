@@ -51,6 +51,7 @@ Plug 'puremourning/vimspector'
 
 " Auto complete
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'honza/vim-snippets'
 
 Plug 'octol/vim-cpp-enhanced-highlight'
 
@@ -180,7 +181,7 @@ au Syntax * RainbowParenthesesLoadBraces
 " Auto complete  {{{
 
 let g:coc_global_extensions = [
-      \'coc-clangd', 'coc-python', 'coc-json', 'coc-cmake',
+      \'coc-python', 'coc-json', 'coc-cmake',
       \'coc-git', 'coc-sh', 'coc-markdownlint',
       \'coc-snippets', 'coc-highlight', 'coc-eslint', 'coc-pairs',
       \'coc-prettier',
@@ -450,8 +451,6 @@ noremap <C-k> <C-W>k
 noremap <C-l> <C-W>l
 
 inoremap <c-h> <left>
-inoremap <c-j> <down>
-inoremap <c-k> <up>
 inoremap <c-l> <right>
 
 nnoremap <c-w>k :abo split <cr>
