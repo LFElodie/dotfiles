@@ -13,7 +13,6 @@ case $OSTYPE {
         path=('/opt/homebrew/bin' "/Library/Developer/CommandLineTools/usr/bin" $path)
         export PATH
         [ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
-        export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
     ;;
     (linux*)
         export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/linuxbrew-bottles
