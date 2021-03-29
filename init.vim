@@ -84,8 +84,6 @@ set nowrap
 set mouse=n
 set lazyredraw
 set belloff=all
-let g:auto_save = 1
-let g:auto_save_events = ["InsertLeave", "TextChanged", "TextChangedI", "CursorHoldI", "CompleteDone"]
 
 " }}}
 
@@ -407,11 +405,11 @@ func! CompileRunGcc()
     :rightbelow vsplit
     :vertical resize -15
     if &filetype == 'c'
-        exec "!gcc % -o %<"
+        exec "!gcc %"
 		:term time ./%<
     elseif &filetype == 'cpp'
-        exec "!g++ % -o %< -std=c++17"
-		:term time ./%<
+        exec "!g++ % -std=c++17"
+		:term time ./a.out
     elseif &filetype == 'sh'
 		:term time bash %
     elseif &filetype == 'python'
@@ -469,8 +467,16 @@ xnoremap J :move '>+1'<cr>gv-gv
 nnoremap <silent> <leader>tn :tabnew<cr>
 nnoremap <silent> <leader>tc :tabclose<cr>
 
+func! OpenTerminalBelow()
+  :below split
+  :resize -3
+  :term
+endfunc
+nnoremap <silent> <leader>tt :call OpenTerminalBelow()<cr>
+
 nnoremap <silent> <leader>bn :bn<CR>
 nnoremap <silent> <leader>bp :bp<CR>
+nnoremap <silent> <leader>bd :bd<CR>
 
 vnoremap  <leader>y  "+y
 nnoremap  <leader>Y  "+yg_
