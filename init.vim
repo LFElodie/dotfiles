@@ -45,6 +45,7 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'ryanoasis/vim-devicons'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+Plug 'voldikss/vim-floaterm'
 
 " Debug
 Plug 'puremourning/vimspector'
@@ -372,11 +373,9 @@ let g:vimspector_install_gadgets = ['debugpy', 'vscode-cpptools', 'CodeLLDB']
 
 " }}}
 
-" Markdown {{{
+" Nerdcommenter {{{
 
-let g:vim_markdown_math = 1
-let g:vim_markdown_folding_level = 6
-let g:vim_markdown_conceal = 0
+let g:NERDSpaceDelims=1
 
 " }}}
 
@@ -388,6 +387,11 @@ nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 
+" }}}
+
+" Floaterm {{{
+  let g:floaterm_keymap_new = '<Leader>ft'
+  let g:floaterm_keymap_toggle = '<Leader>t'
 " }}}
 
 " }}}
@@ -463,16 +467,6 @@ nnoremap <Right> :vertical resize +2<cr>
 
 xnoremap K :move '<-2'<cr>gv-gv
 xnoremap J :move '>+1'<cr>gv-gv
-
-nnoremap <silent> <leader>tn :tabnew<cr>
-nnoremap <silent> <leader>tc :tabclose<cr>
-
-func! OpenTerminalBelow()
-  :below split
-  :resize -3
-  :term
-endfunc
-nnoremap <silent> <leader>tt :call OpenTerminalBelow()<cr>
 
 nnoremap <silent> <leader>bn :bn<CR>
 nnoremap <silent> <leader>bp :bp<CR>
