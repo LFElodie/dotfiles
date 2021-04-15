@@ -46,6 +46,7 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'ryanoasis/vim-devicons'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'voldikss/vim-floaterm'
+Plug 'mhinz/vim-startify'
 
 " Debug
 Plug 'puremourning/vimspector'
@@ -392,6 +393,30 @@ nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 " Floaterm {{{
   let g:floaterm_keymap_new = '<Leader>ft'
   let g:floaterm_keymap_toggle = '<Leader>t'
+" }}}
+
+" Startify {{{
+
+let g:startify_bookmarks = [
+  \ { 'z': '~/.zshrc' },
+  \ { 'v': '~/.config/nvim/init.vim' },
+  \ ]
+
+let g:startify_custom_header = [
+  \' .____   ______________________.__             .___.__        ',
+  \' |    |  \_   _____/\_   _____/|  |   ____   __| _/|__| ____  ',
+  \' |    |   |    __)   |    __)_ |  |  /  _ \ / __ | |  |/ __ \ ',
+  \' |    |___|     \    |        \|  |_(  <_> ) /_/ | |  \  ___/ ',
+  \' |_______ \___  /   /_______  /|____/\____/\____ | |__|\___  >',
+  \'         \/   \/            \/                  \/         \/ ',
+  \ ]
+
+let g:startify_lists = [
+      \ { 'header': ['   Bookmarks'],       'type': 'bookmarks' },
+      \ { 'header': ['   MRU'],            'type': 'files' },
+      \ { 'header': ['   MRU '. getcwd()], 'type': 'dir' },
+      \ ]
+
 " }}}
 
 " }}}
