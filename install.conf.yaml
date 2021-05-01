@@ -6,15 +6,7 @@
 
 - clean: ['~']
 
-- brew:
-    - neovim
-    - autojump
-    - ranger
-    - tmux
-    - fzf
-
 - shell:
-  - [sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)", Installing ohmyzsh]
   - [git submodule update --init --recursive, Installing submodules]
 
 - link:
