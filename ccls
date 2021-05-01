@@ -1,8 +1,11 @@
--std=c++14
+%cc -std=c++17
+%h -x
+%h c++-header
+
 -isystem
-/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1
+/Library/Developer/CommandLineTools/usr/bin/../include/c++/
 -isystem
-/Library/Developer/CommandLineTools/usr/lib/clang/12.0.0/include
+/Library/Developer/CommandLineTools/usr/lib/clang/12.0.5/include
 -isystem
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include
 -isystem

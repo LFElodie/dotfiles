@@ -55,7 +55,10 @@ Plug 'puremourning/vimspector'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'honza/vim-snippets'
 
+" For c++
 Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'vim-syntastic/syntastic'
+Plug 'rhysd/vim-clang-format'
 
 call plug#end()
 
@@ -419,13 +422,40 @@ let g:startify_lists = [
 
 " }}}
 
+" highlight {{{
+
+" c++ syntax highlighting
+let g:cpp_class_scope_highlight = 1
+let g:cpp_member_variable_highlight = 1
+let g:cpp_class_decl_highlight = 1
+
+" }}}
+
+" syntastic/lint {{{
+
+let g:syntastic_cpp_checkers = ['cpplint']
+let g:syntastic_c_checkers = ['cpplint']
+let g:syntastic_cpp_cpplint_exec = 'cpplint'
+
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+" }}}
+
+" clang-format {{{
+
+" autocmd FileType c,cpp,objc nnoremap <buffer><Leader>f :<C-u>ClangFormat<CR>
+" autocmd FileType c,cpp,objc vnoremap <buffer><Leader>f :ClangFormat<CR>
+
+" }}}
+
 " }}}
 
 " Key binding and autocmd {{{
 
-autocmd BufWritePost $MYVIMRC source $MYVIMRC
-
 nnoremap <esc> :noh<return><esc>
+nnoremap <esc> :w<return><esc>
+inoremap <esc> <esc>:w<return><esc>
 nnoremap <esc>^[ <esc>^[
 
 map <F2> :call CompileRunGcc()<CR>
@@ -435,7 +465,7 @@ func! CompileRunGcc()
     :vertical resize -15
     if &filetype == 'c'
         exec "!gcc %"
-		:term time ./%<
+		:term time ./a.out
     elseif &filetype == 'cpp'
         exec "!g++ % -std=c++17"
 		:term time ./a.out
