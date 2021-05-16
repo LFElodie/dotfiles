@@ -453,10 +453,8 @@ let g:syntastic_check_on_wq = 0
 
 " Key binding and autocmd {{{
 
-nnoremap <esc> :noh<return><esc>
-nnoremap <esc> :w<return><esc>
+noremap <esc> :w<return>:noh<return><esc>
 inoremap <esc> <esc>:w<return><esc>
-nnoremap <esc>^[ <esc>^[
 
 map <F2> :call CompileRunGcc()<CR>
 func! CompileRunGcc()
