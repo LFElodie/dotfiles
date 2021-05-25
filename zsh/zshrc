@@ -22,6 +22,7 @@ case $OSTYPE {
 ZSH_THEME="agnoster"
 plugins=(
     git
+    vi-mode
     zsh-autosuggestions
     zsh-completions
     zsh-syntax-highlighting
