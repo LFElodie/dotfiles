@@ -453,7 +453,7 @@ let g:syntastic_check_on_wq = 0
 
 " Key binding and autocmd {{{
 
-noremap <esc> :w<return>:noh<return><esc>
+noremap <esc> <esc>:w<return>:noh<return><esc>
 inoremap <esc> <esc>:w<return><esc>
 
 map <F2> :call CompileRunGcc()<CR>
@@ -485,6 +485,8 @@ endfun
 map <leader>sa ggVG"
 map <C-a> <Home>
 map <C-e> <End>
+nnoremap <leader>a <C-a>
+nnoremap <leader>x <C-x>
 map Y y$
 nnoremap U <C-r>
 nnoremap Q :q<cr>
