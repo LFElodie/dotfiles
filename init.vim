@@ -47,6 +47,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'voldikss/vim-floaterm'
 Plug 'mhinz/vim-startify'
+Plug 'babaybus/DoxygenToolkit.vim'
 
 " Debug
 Plug 'puremourning/vimspector'
