@@ -48,6 +48,7 @@ Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'voldikss/vim-floaterm'
 Plug 'mhinz/vim-startify'
 Plug 'babaybus/DoxygenToolkit.vim'
+Plug 'easymotion/vim-easymotion'
 
 " Debug
 Plug 'puremourning/vimspector'
