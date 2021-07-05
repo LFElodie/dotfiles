@@ -16,6 +16,7 @@
         glob: true
         path: zsh/plugins/*
     ~/.config/nvim/init.vim: init.vim
+    ~/.config/coc/ultisnips/cpp.snippets: cpp.snippets
     ~/.config/nvim/coc-settings.json: coc-settings.json
     ~/.config/ranger: ranger
     ~/.gitignore_global: gitignore_global

@@ -49,6 +49,9 @@ Plug 'voldikss/vim-floaterm'
 Plug 'mhinz/vim-startify'
 Plug 'babaybus/DoxygenToolkit.vim'
 Plug 'easymotion/vim-easymotion'
+Plug 'cdelledonne/vim-cmake'
+Plug 'alepez/vim-gtest'
+
 
 " Debug
 Plug 'puremourning/vimspector'
@@ -232,6 +235,18 @@ function! s:check_back_space() abort
     return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
+let g:coc_snippet_next = '<tab>'
+
+" Use <C-j> for jump to next placeholder, it's default of coc.nvim
+let g:coc_snippet_next = '<c-j>'
+
+" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
+let g:coc_snippet_prev = '<c-k>'
+
+" Use <C-j> for both expand and jump (make expand higher priority.)
+imap <C-j> <Plug>(coc-snippets-expand-jump)
+
+
 " Use <c-space> to trigger completion.
 if has('nvim')
     inoremap <silent><expr> <c-space> coc#refresh()
@@ -319,8 +334,8 @@ endif
 
 " Use CTRL-S for selections ranges.
 " Requires 'textDocument/selectionRange' support of language server.
-nmap <silent> <C-s> <Plug>(coc-range-select)
-xmap <silent> <C-s> <Plug>(coc-range-select)
+" nmap <silent> <C-s> <Plug>(coc-range-select)
+" xmap <silent> <C-s> <Plug>(coc-range-select)
 
 " Add `:Format` command to format current buffer.
 command! -nargs=0 Format :call CocAction('format')
@@ -382,6 +397,10 @@ let g:vimspector_install_gadgets = ['debugpy', 'vscode-cpptools', 'CodeLLDB']
 " Nerdcommenter {{{
 
 let g:NERDSpaceDelims=1
+let g:NERDCreateDefaultMappings = 0
+
+map <leader>cc <plug>NERDCommenterComment
+map <leader>cu <plug>NERDCommenterUncomment
 
 " }}}
 
@@ -398,6 +417,9 @@ nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 " Floaterm {{{
   let g:floaterm_keymap_new = '<Leader>ft'
   let g:floaterm_keymap_toggle = '<Leader>t'
+  let g:floaterm_position = 'bottom'
+  let g:floaterm_width = 1.0
+  let g:floaterm_height = 0.6
 " }}}
 
 " Startify {{{
@@ -448,6 +470,14 @@ let g:syntastic_check_on_wq = 0
 
 " autocmd FileType c,cpp,objc nnoremap <buffer><Leader>f :<C-u>ClangFormat<CR>
 " autocmd FileType c,cpp,objc vnoremap <buffer><Leader>f :ClangFormat<CR>
+
+" }}}
+
+" cmake {{{
+
+let g:cmake_link_compile_commands = 1
+nmap <leader>cg :CMakeGenerate<cr>
+nmap <leader>cb :CMakeBuild<cr>
 
 " }}}
 
@@ -528,6 +558,8 @@ xnoremap J :move '>+1'<cr>gv-gv
 nnoremap <silent> <leader>bn :bn<CR>
 nnoremap <silent> <leader>bp :bp<CR>
 nnoremap <silent> <leader>bd :bd<CR>
+nnoremap <silent> <leader>bl :ls<CR>
+nnoremap <silent> <leader>bo :enew<CR>
 
 vnoremap  <leader>y  "+y
 nnoremap  <leader>Y  "+yg_
