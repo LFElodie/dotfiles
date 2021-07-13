@@ -12,9 +12,8 @@
 - link:
     ~/.tmux.conf: tmux.conf
     ~/.zshrc: zsh/zshrc
-    ~/.oh-my-zsh/custom/plugins/:
-        glob: true
-        path: zsh/plugins/*
+    ~/.p10k.zsh: zsh/p10k.zsh
+    ~/.oh-my-zsh/custom: zsh/custom
     ~/.config/nvim/init.vim: init.vim
     ~/.config/coc/ultisnips/cpp.snippets: cpp.snippets
     ~/.config/nvim/coc-settings.json: coc-settings.json
