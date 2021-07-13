@@ -203,7 +203,7 @@ set nobackup
 set nowritebackup
 
 " Give more space for displaying messages.
-set cmdheight=2
+" set cmdheight=2
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " delays and poor user experience.
@@ -557,6 +557,8 @@ xnoremap J :move '>+1'<cr>gv-gv
 
 nnoremap <silent> <leader>bn :bn<CR>
 nnoremap <silent> <leader>bp :bp<CR>
+nnoremap J :bp<CR>
+nnoremap K :bn<CR>
 nnoremap <silent> <leader>bd :bd<CR>
 nnoremap <silent> <leader>bl :ls<CR>
 nnoremap <silent> <leader>bo :enew<CR>
