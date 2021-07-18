@@ -374,8 +374,11 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 " Airline {{{
 
 let g:airline#extensions#tabline#enabled = 1
+let g:airline_powerline_fonts = 1
 let g:airline_theme='solarized'
 let g:airline_solarized_bg='dark'
+let g:airline_section_a = airline#section#create(['mode'])
+let g:airline#extensions#whitespace#enabled = 0
 
 " }}}
 
