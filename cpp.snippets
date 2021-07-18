@@ -25,8 +25,14 @@
 # Online reference: https://github.com/SirVer/ultisnips/blob/master/doc/UltiSnips.txt
 
 snippet mfun "memberFunction" b
-${4:void} ${1:`!v substitute(substitute(vim_snippets#Filename('$1','ClassName'),'^.','\u&',''), '_\(\w\)', '\u\1', 'g')`}::${2:$1}(${3:parameters}) {
+${4:void} ${1:`!v substitute(substitute(vim_snippets#Filename('$1','ClassName'),'^.','\u&',''), '_\(\w\)', '\u\1', 'g')`}::${2:memberFunction}(${3:parameters}) {
   ${5}
+}
+endsnippet
+
+snippet cfun "memberFunction" b
+${1:`!v substitute(substitute(vim_snippets#Filename('$1','ClassName'),'^.','\u&',''), '_\(\w\)', '\u\1', 'g')`}::${2:$1}(${3:parameters}) {
+  ${4}
 }
 endsnippet
 
@@ -58,5 +64,15 @@ snippet switch "switch"
 switch (${1:choice}) {
 default:
   break;
+}
+endsnippet
+
+snippet incc "Description" b
+#include <${1:iostream}
+endsnippet
+
+snippet forc "general for loop (for)"
+for (auto${5:} ${1:i} = ${2:v}.begin(); $1 ${3:!=} $2.end(); ${4:++}$1) {
+	${VISUAL}$0
 }
 endsnippet
