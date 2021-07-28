@@ -4,12 +4,7 @@
 
 if empty(glob('~/.config/nvim/autoload/plug.vim'))
     silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    silent !sudo pip3 install flake8 autopep8
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
-
-if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 endif
 
 " }}}
@@ -92,6 +87,7 @@ set signcolumn=yes
 set colorcolumn=80
 set nowrap
 set mouse=n
+set ttyfast
 set lazyredraw
 set belloff=all
 
@@ -373,12 +369,33 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
 " Airline {{{
 
+let g:airline#extensions#coc#enabled = 1
+let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_buffers = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+let g:airline#extensions#tabline#tab_nr_type = 1
+let g:airline#extensions#tabline#show_tab_nr = 1
+let g:airline#extensions#tabline#fnametruncate = 16
+let g:airline#extensions#tabline#fnamecollapse = 2
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+let g:airline#extensions#tabline#buffer_nr_show = 0
+let g:airline_left_sep = ''
+let g:airline_right_sep = ''
 let g:airline_powerline_fonts = 1
 let g:airline_theme='solarized'
 let g:airline_solarized_bg='dark'
 let g:airline_section_a = airline#section#create(['mode'])
 let g:airline#extensions#whitespace#enabled = 0
+nmap <silent> <leader>1         <Plug>AirlineSelectTab1
+nmap <silent> <leader>2         <Plug>AirlineSelectTab2
+nmap <silent> <leader>3         <Plug>AirlineSelectTab3
+nmap <silent> <leader>4         <Plug>AirlineSelectTab4
+nmap <silent> <leader>5         <Plug>AirlineSelectTab5
+nmap <silent> <leader>6         <Plug>AirlineSelectTab6
+nmap <silent> <leader>7         <Plug>AirlineSelectTab7
+nmap <silent> <leader>8         <Plug>AirlineSelectTab8
+nmap <silent> <leader>9         <Plug>AirlineSelectTab9
 
 " }}}
 
@@ -526,17 +543,6 @@ map Y y$
 nnoremap U <C-r>
 nnoremap Q :q<cr>
 
-noremap <leader>1 1gt
-noremap <leader>2 2gt
-noremap <leader>3 3gt
-noremap <leader>4 4gt
-noremap <leader>5 5gt
-noremap <leader>6 6gt
-noremap <leader>7 7gt
-noremap <leader>8 8gt
-noremap <leader>9 9gt
-noremap <leader>0 :tablast<cr>
-
 noremap <C-h> <C-W>h
 noremap <C-j> <C-W>j
 noremap <C-k> <C-W>k
@@ -557,6 +563,8 @@ nnoremap <Right> :vertical resize +2<cr>
 
 xnoremap K :move '<-2'<cr>gv-gv
 xnoremap J :move '>+1'<cr>gv-gv
+xnoremap < <gv
+xnoremap > >gv
 
 nnoremap <silent> <leader>bn :bn<CR>
 nnoremap <silent> <leader>bp :bp<CR>
