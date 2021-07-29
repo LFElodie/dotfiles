@@ -42,14 +42,19 @@ source $ZSH/oh-my-zsh.sh
 
 alias gs="git status"
 alias s="tmux"
+alias vim='nvim'
+alias typora="open -a typora"
+
 alias dkps="docker ps"
 alias dkpa="docker ps -a"
 alias dki="docker images"
 alias dka="docker attach"
 alias dkrm='docker rm'
 alias dkrmi='docker rmi'
-alias vim='nvim'
-alias typora="open -a typora"
+
+alias cw='cd ~/catkin_ws'
+alias cs='cd ~/catkin_ws/src'
+alias cm='cd ~/catkin_ws && catkin_make'
 
 export MYZSHRC="$HOME/.zshrc"
 export MYTMUXCONF="$HOME/.tmux.conf"
