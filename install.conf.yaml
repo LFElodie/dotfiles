@@ -19,9 +19,11 @@
     ~/.oh-my-zsh/custom/plugins:
       glob: true
       path: zsh/custom/plugins/*
-    ~/.config/nvim/init.vim: init.vim
-    ~/.config/coc/ultisnips/cpp.snippets: cpp.snippets
-    ~/.config/nvim/coc-settings.json: coc-settings.json
+    # ~/.config/nvim/init.vim: init.vim
+    ~/.config/nvim/init.lua: init.lua
+    ~/.config/nvim/lua:
+      glob: true
+      path: lua/*
     ~/.config/ranger: ranger
     ~/.gitignore_global: gitignore_global
 
