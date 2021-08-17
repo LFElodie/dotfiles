@@ -7,9 +7,6 @@ local keymap = vim.api.nvim_set_keymap
 -- leader key
 g.mapleader = ','
 
--- color scheme
-vim.cmd[[colorscheme gruvbox]]
-
 require 'basicsettings'
 require 'pluginlist'
 require 'treesitter'
@@ -17,3 +14,5 @@ require 'pluginssettings'
 require 'completion'
 require 'keybindings'
 
+-- color scheme
+vim.cmd[[colorscheme gruvbox]]
