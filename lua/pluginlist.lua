@@ -28,14 +28,14 @@ require('packer').startup(function()
 
   -- git
   use 'tpope/vim-fugitive' -- Git commands in nvim
-  use 'tpope/vim-commentary' -- "gc" to comment visual regions/lines
-  use 'tpope/vim-surround' -- surroundings
   -- Add git related info in the signs columns and popups
   use {
     'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } 
   } 
 
   -- tools
+  use 'tpope/vim-commentary' -- "gc" to comment visual regions/lines
+  use 'tpope/vim-surround' -- surroundings
   use'mg979/vim-visual-multi'
   use 'tpope/vim-sleuth' -- auto indent
   use 'tpope/vim-repeat' -- repeat
