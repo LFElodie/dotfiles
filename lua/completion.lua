@@ -244,5 +244,36 @@ vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 
 vim.g.UltiSnipsExpandTrigger = "<c-j>"
 
-vim.api.nvim_set_keymap("i", "<CR>", "compe#confirm({ 'keys': '<CR>', 'select': v:true })", { expr = true })
+-- vim.api.nvim_set_keymap("i", "<CR>", "compe#confirm({ 'keys': '<CR>', 'select': v:true })", { expr = true })
 -- }}}
+
+local npairs = require("nvim-autopairs")
+
+npairs.setup({
+    enable_check_bracket_line = false;
+    ignored_next_char = "[%w%.]"; -- will ignore alphanumeric and `.` symbol
+    check_ts = true,
+    ts_config = {
+        lua = {'string'},-- it will not add pair on that treesitter node
+        javascript = {'template_string'},
+        java = false,-- don't check treesitter on java
+    }
+})
+
+local ts_config = require('nvim-treesitter.configs')
+
+ts_config.setup {
+    ensure_installed = {
+        'c', 'cpp', 'css', 'bash', 'html', 'javascript', 'lua', 'typescript'
+    };
+    highlight = {enable = true, use_languagetree = true};
+    indent_on_enter = { enable = true };
+    indent = {enable = true};
+    autopairs = {enable = true}
+}
+
+require("nvim-autopairs.completion.compe").setup({
+  map_cr = true, --  map <CR> on insert mode
+  map_complete = true, -- it will auto insert `(` after select function or method item
+  auto_select = true,  -- auto select first item
+})

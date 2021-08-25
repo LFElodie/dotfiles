@@ -66,4 +66,17 @@
 
 -- }}}
 
+-- indent {{{
 
+vim.cmd('filetype plugin on')
+vim.cmd('filetype plugin indent on')
+vim.o.tabstop = 2
+vim.o.softtabstop = 2
+vim.o.shiftwidth = 2
+vim.o.autoindent = true
+vim.o.smartindent = true
+vim.o.shiftround = true
+vim.o.cindent = true
+vim.o.expandtab = true
+
+-- }}}

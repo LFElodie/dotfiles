@@ -9,7 +9,6 @@ g.mapleader = ','
 
 require 'basicsettings'
 require 'pluginlist'
-require 'treesitter'
 require 'pluginssettings'
 require 'completion'
 require 'keybindings'
