@@ -22,8 +22,7 @@ require('packer').startup(function()
   use 'nvim-lua/lsp_extensions.nvim'
   use 'onsails/lspkind-nvim'
   use 'hrsh7th/nvim-compe'
-  -- use 'windwp/nvim-autopairs'
-  use 'jiangmiao/auto-pairs'
+  use 'windwp/nvim-autopairs'
   use 'rhysd/vim-clang-format'
 
   -- git
@@ -37,7 +36,7 @@ require('packer').startup(function()
   use 'tpope/vim-commentary' -- "gc" to comment visual regions/lines
   use 'tpope/vim-surround' -- surroundings
   use'mg979/vim-visual-multi'
-  use 'tpope/vim-sleuth' -- auto indent
+  -- use 'tpope/vim-sleuth' -- auto indent
   use 'tpope/vim-repeat' -- repeat
   use 'voldikss/vim-floaterm' -- Float term
   use 'terrortylor/nvim-comment'

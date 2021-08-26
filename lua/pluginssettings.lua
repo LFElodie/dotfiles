@@ -81,8 +81,21 @@ require'lualine'.setup {
   sections = {
     lualine_a = {'mode'},
     lualine_b = {'branch'},
-    lualine_c = {'filename'},
-    lualine_x = {'encoding', 'fileformat', 'filetype'},
+    lualine_c = {
+      {
+        'filename',
+        file_status = true,
+        path = 2,
+      }
+    },
+    lualine_x = {
+      'encoding', 
+      'fileformat', 
+      {
+        'filetype', 
+        colored = true
+      }
+    },
     lualine_y = {'progress'},
     lualine_z = {'location'}
   },
@@ -118,6 +131,25 @@ require("bufferline").setup{
   }
 }
 
+
+
+-- }}}
+
+-- comment {{{
+
+require('nvim_comment').setup({
+  create_mappings = true;
+  line_mapping = "<leader>cc";
+  operator_mapping = "<leader>c";
+  require('nvim_comment').setup({
+  hook = function()
+    if vim.api.nvim_buf_get_option(0, "filetype") == "cpp" then
+      vim.api.nvim_buf_set_option(0, "commentstring", "// %s")
+    end
+  end
+})
+
+})
 
 
 -- }}}

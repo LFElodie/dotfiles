@@ -132,6 +132,8 @@ vim.lsp.handlers["textDocument/definition"] = goto_definition('split')
 -- }}}
 
 -- setup language servers {{{
+
+-- cpp
 nvim_lsp.ccls.setup ({
   on_attach = on_attach;
   capabilities = capabilities;
@@ -149,6 +151,10 @@ nvim_lsp.ccls.setup ({
   }
 })
 
+-- cmake
+require'lspconfig'.cmake.setup{}
+
+-- python
 nvim_lsp.pyright.setup({
   on_attach = on_attach;
   capabilities = capabilities;
@@ -247,6 +253,8 @@ vim.g.UltiSnipsExpandTrigger = "<c-j>"
 -- vim.api.nvim_set_keymap("i", "<CR>", "compe#confirm({ 'keys': '<CR>', 'select': v:true })", { expr = true })
 -- }}}
 
+-- treesitter & autopairs {{{
+
 local npairs = require("nvim-autopairs")
 
 npairs.setup({
@@ -277,3 +285,5 @@ require("nvim-autopairs.completion.compe").setup({
   map_complete = true, -- it will auto insert `(` after select function or method item
   auto_select = true,  -- auto select first item
 })
+
+-- }}}
