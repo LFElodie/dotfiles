@@ -4,12 +4,17 @@ local keymap = vim.api.nvim_set_keymap
 
 keymap('n', '<leader>f', ':<c-u>ClangFormat<cr>', { noremap = true })
 keymap('v', '<leader>f', ':ClangFormat<cr>', { noremap = true })
--- Completion menu symbols
+
+-- }}}
+
+-- Completion menu symbols {{{
+
 require('lspkind').init()
 
 --}}}
 
 -- LSP {{{
+
   -- nvim-lspconfig
   local nvim_lsp = require('lspconfig')
 
@@ -203,7 +208,7 @@ require('compe').setup {
         nvim_lua = true,
         -- spell = true,
         -- tags = true,
-        snippets_nvim = true,
+        -- snippets_nvim = true,
         treesitter = true
     }
 }
