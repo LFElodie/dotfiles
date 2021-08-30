@@ -33,6 +33,9 @@ require('gitsigns').setup {
 -- Telescope {{{
 require('telescope').setup {
   defaults = {
+    file_ignore_patterns = {
+      "build",
+    },
     mappings = {
       i = {
         ['<C-u>'] = false,
