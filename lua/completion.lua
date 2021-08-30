@@ -127,7 +127,7 @@ local function goto_definition(split_cmd)
   return handler
 end
 
-vim.lsp.handlers["textDocument/definition"] = goto_definition('split')
+-- vim.lsp.handlers["textDocument/definition"] = goto_definition('split')
 
 -- }}}
 
