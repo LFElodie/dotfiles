@@ -89,6 +89,7 @@ require'lualine'.setup {
       }
     },
     lualine_x = {
+      'diff',
       'encoding', 
       'fileformat', 
       {
