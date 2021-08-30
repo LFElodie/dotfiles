@@ -1,11 +1,5 @@
-local cmd = vim.cmd
-local g = vim.g
-local set = vim.api.nvim_set_option
-local wset = vim.api.nvim_win_set_option
-local keymap = vim.api.nvim_set_keymap
-
 -- leader key
-g.mapleader = ','
+vim.g.mapleader = ','
 
 require 'basicsettings'
 require 'pluginlist'
