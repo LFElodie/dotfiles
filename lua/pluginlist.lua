@@ -21,7 +21,17 @@ require('packer').startup(function()
   use 'neovim/nvim-lspconfig'
   use 'nvim-lua/lsp_extensions.nvim'
   use 'onsails/lspkind-nvim'
-  use 'hrsh7th/nvim-compe'
+  -- Install nvim-cmp, and buffer source as a dependency
+  use {
+    "hrsh7th/nvim-cmp",
+    requires = {
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-path",
+      "quangnguyen30192/cmp-nvim-ultisnips",
+    }
+  }
+
   use 'windwp/nvim-autopairs'
   use 'rhysd/vim-clang-format'
 

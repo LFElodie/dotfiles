@@ -13,6 +13,96 @@ require('lspkind').init()
 
 --}}}
 
+-- nvim-cmp & ultisnips {{{
+local cmp = require'cmp'
+vim.g.UltiSnipsExpandTrigger = "<c-j>"
+
+local t = function(str)
+  return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
+local check_back_space = function()
+    local col = vim.fn.col('.') - 1
+    return col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') ~= nil
+end
+
+cmp.setup {
+  completion = {
+    completeopt = 'menu,menuone,noinsert',
+  },
+  snippet = {
+    expand = function(args)
+      vim.fn['UltiSnips#Anon'](args.body)
+    end
+  },
+  sources = {
+    { name = "ultisnips"},
+    { name = "nvim_lua"},
+    { name = "nvim_lsp"},
+    { name = "buffer"},
+    { name = "path"},
+  },
+  formatting = {
+    format = function(entry, vim_item)
+      -- fancy icons and a name of kind
+      vim_item.kind = require("lspkind").presets.default[vim_item.kind] .. " " .. vim_item.kind
+
+      -- set a name for each source
+      vim_item.menu = ({
+        ultisnips = "[Snippets]",
+        buffer = "[Buffer]",
+        nvim_lsp = "[LSP]",
+        nvim_lua = "[Lua]",
+      })[entry.source.name]
+      return vim_item
+    end,
+  },
+  mapping = {
+    ['<CR>'] = cmp.mapping.confirm(),
+    ["<C-j>"] = cmp.mapping(function(fallback)
+      if vim.fn.pumvisible() == 1 then
+        if vim.fn["UltiSnips#CanExpandSnippet"]() == 1 then
+          return vim.fn.feedkeys(t("<C-R>=UltiSnips#ExpandSnippet()<CR>"))
+        end
+      fallback()
+      end
+    end, {
+      "i",
+      "s",
+    }),
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if vim.fn.complete_info()["selected"] == -1 and vim.fn["UltiSnips#CanExpandSnippet"]() == 1 then
+        vim.fn.feedkeys(t("<C-R>=UltiSnips#ExpandSnippet()<CR>"))
+      elseif vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
+        vim.fn.feedkeys(t("<C-R>=UltiSnips#JumpForwards()<CR>"))
+      elseif vim.fn.pumvisible() == 1 then
+        vim.fn.feedkeys(t("<C-n>"), "n")
+      elseif check_back_space() then
+        vim.fn.feedkeys(t("<tab>"), "n")
+      else
+        fallback()
+      end
+    end, {
+      "i",
+      "s",
+    }),
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
+      if vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
+        return vim.fn.feedkeys(t("<C-R>=UltiSnips#JumpBackwards()<CR>"))
+      elseif vim.fn.pumvisible() == 1 then
+        vim.fn.feedkeys(t("<C-p>"), "n")
+      else
+        fallback()
+      end
+    end, {
+      "i",
+      "s",
+    }),
+  },
+}
+
+-- }}}
+
 -- LSP {{{
 
   -- nvim-lspconfig
@@ -27,7 +117,7 @@ require('lspkind').init()
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+    -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
@@ -45,9 +135,8 @@ require('lspkind').init()
   end
 
   local capabilities = vim.lsp.protocol.make_client_capabilities()
-  capabilities.textDocument.completion.completionItem.snippetSupport = true
-  capabilities.textDocument.completion.completionItem.resolveSupport =
-  {properties = {'documentation', 'detail', 'additionalTextEdits'}}
+  capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+
 -- }}}
 
 -- Diagnostics {{{
@@ -169,95 +258,6 @@ nvim_lsp.pyright.setup({
 
 -- }}}
 
--- compe {{{
-
-vim.o.completeopt = 'menuone,noselect'
-vim.cmd('set shortmess+=c')
-
-vim.cmd('highlight link CompeDocumentation NormalFloat')
-
-require('compe').setup {
-    enabled = true;
-    autocomplete = true;
-    debug = false;
-    min_length = 1;
-    preselect = 'enable';
-    throttle_time = 80;
-    source_timeout = 200;
-    resolve_timeout = 800;
-    incomplete_delay = 400;
-    max_abbr_width = 100;
-    max_kind_width = 100;
-    max_menu_width = 100;
-    documentation = {
-    border = { '', '' ,'', ' ', '', '', '', ' ' }, -- the border option is the same as `|help nvim_open_win|`
-    winhighlight = "NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder",
-    max_width = 120,
-    min_width = 60,
-    max_height = math.floor(vim.o.lines * 0.3),
-    min_height = 1,
-    };
-    source = {
-        path = true,
-        buffer = true,
-        -- calc = true,
-        -- vsnip = true,
-        -- luasnip = true,
-        ultisnips = true,
-        nvim_lsp = true,
-        nvim_lua = true,
-        -- spell = true,
-        -- tags = true,
-        -- snippets_nvim = true,
-        treesitter = true
-    }
-}
-
--- }}}
-
--- ultisnips {{{
-
-local t = function(str)
-  return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
-local check_back_space = function()
-    local col = vim.fn.col('.') - 1
-    return col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') ~= nil
-end
-
-_G.tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-n>"
-  elseif vim.fn['UltiSnips#CanJumpForwards'] == 1 then
-    return t "<Plug>(UltiSnips#JumpForwards)"
-  elseif check_back_space() then
-    return t "<Tab>"
-  else
-    return vim.fn['compe#complete']()
-  end
-end
-
-_G.s_tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-p>"
-  elseif vim.fn['UltiSnips#CanJumpBackwards'] == 1 then
-    return t "<Plug>(UltiSnips#JumpBackwards)"
-  else
-    return t "<S-Tab>"
-  end
-end
-
-vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-
-vim.g.UltiSnipsExpandTrigger = "<c-j>"
-
--- vim.api.nvim_set_keymap("i", "<CR>", "compe#confirm({ 'keys': '<CR>', 'select': v:true })", { expr = true })
--- }}}
-
 -- treesitter & autopairs {{{
 
 local npairs = require("nvim-autopairs")
@@ -285,7 +285,7 @@ ts_config.setup {
     autopairs = {enable = true}
 }
 
-require("nvim-autopairs.completion.compe").setup({
+require("nvim-autopairs.completion.cmp").setup({
   map_cr = true, --  map <CR> on insert mode
   map_complete = true, -- it will auto insert `(` after select function or method item
   auto_select = true,  -- auto select first item
