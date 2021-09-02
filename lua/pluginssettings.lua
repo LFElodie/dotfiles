@@ -11,7 +11,7 @@ vim.g.indent_blankline_show_trailing_blankline_indent = false
 -- fugitive {{{
 
 vim.api.nvim_set_keymap('n', '<leader>gs', [[<cmd>G<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>gd', [[<cmd>Gvdiffsplit<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>gd', [[<cmd>Gvdiffsplit!<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>gf', [[<cmd>diffget //2<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>gj', [[<cmd>diffget //3<CR>]], { noremap = true, silent = true })
 
@@ -25,6 +25,12 @@ require('gitsigns').setup {
     delete = { hl = 'GitGutterDelete', text = '_' },
     topdelete = { hl = 'GitGutterDelete', text = '‾' },
     changedelete = { hl = 'GitGutterChange', text = '~' },
+  },
+  current_line_blame = true,
+  current_line_blame_opts = {
+    virt_text = true,
+    virt_text_pos = 'right_align', -- 'eol' | 'overlay' | 'right_align'
+    delay = 500,
   },
 }
 
