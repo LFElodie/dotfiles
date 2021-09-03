@@ -237,7 +237,7 @@ nvim_lsp.ccls.setup ({
       onChange = 1;
     };
     cache = {
-      directory = ''
+      directory = '/tmp/ccls-cache',
     };
     index = {
       onChange = true
@@ -246,7 +246,7 @@ nvim_lsp.ccls.setup ({
 })
 
 -- cmake
-require'lspconfig'.cmake.setup{}
+nvim_lsp.cmake.setup{}
 
 -- python
 nvim_lsp.pyright.setup({
