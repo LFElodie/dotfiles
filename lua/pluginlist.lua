@@ -17,10 +17,14 @@ require('packer').startup(function()
   use 'wbthomason/packer.nvim'
 
   -- completion
-  use 'nvim-treesitter/nvim-treesitter'
   use 'neovim/nvim-lspconfig'
   use 'nvim-lua/lsp_extensions.nvim'
   use 'onsails/lspkind-nvim'
+  use 'nvim-treesitter/nvim-treesitter'
+  use 'nvim-treesitter/nvim-treesitter-textobjects'
+  use 'windwp/nvim-autopairs'
+  use 'SirVer/ultisnips'
+  use 'honza/vim-snippets'
   -- Install nvim-cmp, and buffer source as a dependency
   use {
     "hrsh7th/nvim-cmp",
@@ -32,7 +36,6 @@ require('packer').startup(function()
     }
   }
 
-  use 'windwp/nvim-autopairs'
   use 'rhysd/vim-clang-format'
 
   -- git
@@ -60,11 +63,6 @@ require('packer').startup(function()
           'nvim-telescope/telescope-fzy-native.nvim'
       }
   }
-  -- use 'rafamadriz/friendly-snippets'
-  -- use 'hrsh7th/vim-vsnip'
-  -- use 'hrsh7th/vim-vsnip-integ'
-  use 'SirVer/ultisnips'
-  use 'honza/vim-snippets'
   use {
       'hoob3rt/lualine.nvim',
       requires = {'kyazdani42/nvim-web-devicons', opt = true}
