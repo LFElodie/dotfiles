@@ -67,11 +67,18 @@ cmp.setup {
   mapping = {
     ['<CR>'] = cmp.mapping.confirm(),
     ["<C-j>"] = cmp.mapping(function(fallback)
-      if vim.fn.pumvisible() == 1 then
-        if vim.fn["UltiSnips#CanExpandSnippet"]() == 1 then
-          return vim.fn.feedkeys(t("<C-R>=UltiSnips#ExpandSnippet()<CR>"))
-        end
-      fallback()
+      if vim.fn["UltiSnips#CanExpandSnippet"]() == 1 then
+        return vim.fn.feedkeys(t("<C-R>=UltiSnips#ExpandSnippet()<CR>"))
+      elseif vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
+        return vim.fn.feedkeys(t("<C-R>=UltiSnips#JumpForwards()<CR>"))
+      end
+    end, {
+      "i",
+      "s",
+    }),
+    ["<C-k>"] = cmp.mapping(function(fallback)
+      if vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
+        return vim.fn.feedkeys(t("<C-R>=UltiSnips#JumpBackwards()<CR>"))
       end
     end, {
       "i",
