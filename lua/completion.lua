@@ -13,18 +13,16 @@ require('lspkind').init()
 
 --}}}
 
--- nvim-cmp & ultisnips {{{
+-- nvim-cmp & snippets {{{
+
+local has_words_before = function()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
+end
+
 local cmp = require'cmp'
-vim.g.UltiSnipsExpandTrigger = "<c-j>"
-
-local t = function(str)
-  return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
-local check_back_space = function()
-    local col = vim.fn.col('.') - 1
-    return col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') ~= nil
-end
+local luasnip = require('luasnip')
+require("luasnip/loaders/from_vscode").lazy_load()
 
 cmp.setup {
   completion = {
@@ -36,7 +34,7 @@ cmp.setup {
     end
   },
   sources = {
-    { name = "ultisnips"},
+    { name = "luasnip"},
     { name = "nvim_lua"},
     { name = "nvim_lsp"},
     { 
@@ -65,34 +63,29 @@ cmp.setup {
     end,
   },
   mapping = {
-    ['<CR>'] = cmp.mapping.confirm(),
-    ["<C-j>"] = cmp.mapping(function(fallback)
-      if vim.fn["UltiSnips#CanExpandSnippet"]() == 1 then
-        return vim.fn.feedkeys(t("<C-R>=UltiSnips#ExpandSnippet()<CR>"))
-      elseif vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
-        return vim.fn.feedkeys(t("<C-R>=UltiSnips#JumpForwards()<CR>"))
+    ['<C-p>'] = cmp.mapping.select_prev_item(),
+		['<C-n>'] = cmp.mapping.select_next_item(),
+    ["<C-j>"] = cmp.mapping(function()
+      if has_words_before() and luasnip.expand_or_jumpable() then
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-expand-or-jump', true, true, true), '', true)
       end
     end, {
       "i",
       "s",
     }),
     ["<C-k>"] = cmp.mapping(function(fallback)
-      if vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
-        return vim.fn.feedkeys(t("<C-R>=UltiSnips#JumpBackwards()<CR>"))
+      if luasnip.jumpable(-1) then
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-jump-prev', true, true, true), '', true)
       end
     end, {
       "i",
       "s",
     }),
     ["<Tab>"] = cmp.mapping(function(fallback)
-      if vim.fn.complete_info()["selected"] == -1 and vim.fn["UltiSnips#CanExpandSnippet"]() == 1 then
-        vim.fn.feedkeys(t("<C-R>=UltiSnips#ExpandSnippet()<CR>"))
-      elseif vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
-        vim.fn.feedkeys(t("<C-R>=UltiSnips#JumpForwards()<CR>"))
-      elseif vim.fn.pumvisible() == 1 then
-        vim.fn.feedkeys(t("<C-n>"), "n")
-      elseif check_back_space() then
-        vim.fn.feedkeys(t("<tab>"), "n")
+      if vim.fn.pumvisible() == 1 then
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-n>', true, true, true), 'n', true)
+      elseif has_words_before() and luasnip.expand_or_jumpable() then
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-expand-or-jump', true, true, true), '', true)
       else
         fallback()
       end
@@ -100,13 +93,11 @@ cmp.setup {
       "i",
       "s",
     }),
-    ["<S-Tab>"] = cmp.mapping(function(fallback)
-      if vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
-        return vim.fn.feedkeys(t("<C-R>=UltiSnips#JumpBackwards()<CR>"))
-      elseif vim.fn.pumvisible() == 1 then
-        vim.fn.feedkeys(t("<C-p>"), "n")
-      else
-        fallback()
+    ["<S-Tab>"] = cmp.mapping(function()
+      if vim.fn.pumvisible() == 1 then
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-p>', true, true, true), 'n', true)
+      elseif luasnip.jumpable(-1) then
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-jump-prev', true, true, true), '', true)
       end
     end, {
       "i",
@@ -151,56 +142,6 @@ cmp.setup {
   local capabilities = vim.lsp.protocol.make_client_capabilities()
   capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
--- }}}
-
--- Diagnostics {{{
-  -- Diagnostic signs
-  local signs = { Error = " ", Warning = " ", Hint = " ", Information = " " }
-
-  for type, icon in pairs(signs) do
-    local hl = "LspDiagnosticsSign" .. type
-    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-  end
-
-
-  -- You will likely want to reduce updatetime which affects CursorHold
-  -- note: this setting is global and should be set only once
-  vim.o.updatetime = 250
-  vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.lsp.diagnostic.show_line_diagnostics({focusable=false})]]
-
-  -- Show diagnostics in source
-  vim.lsp.handlers["textDocument/publishDiagnostics"] =
-  function(_, _, params, client_id, _)
-    local config = { -- your config
-      underline = true,
-      virtual_text = {
-        prefix = "■ ",
-        spacing = 4,
-      },
-      signs = true,
-      update_in_insert = false,
-    }
-    local uri = params.uri
-    local bufnr = vim.uri_to_bufnr(uri)
-
-    if not bufnr then
-      return
-    end
-
-    local diagnostics = params.diagnostics
-
-    for i, v in ipairs(diagnostics) do
-      diagnostics[i].message = string.format("%s: %s", v.source, v.message)
-    end
-
-    vim.lsp.diagnostic.save(diagnostics, bufnr, client_id)
-
-    if not vim.api.nvim_buf_is_loaded(bufnr) then
-      return
-    end
-
-    vim.lsp.diagnostic.display(diagnostics, bufnr, client_id, config)
-  end
 -- }}}
 
 -- goto_definition {{{

@@ -23,8 +23,6 @@ require('packer').startup(function()
   use 'nvim-treesitter/nvim-treesitter'
   use 'nvim-treesitter/nvim-treesitter-textobjects'
   use 'windwp/nvim-autopairs'
-  use 'SirVer/ultisnips'
-  use 'honza/vim-snippets'
   -- Install nvim-cmp, and buffer source as a dependency
   use {
     "hrsh7th/nvim-cmp",
@@ -32,7 +30,9 @@ require('packer').startup(function()
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-path",
-      "quangnguyen30192/cmp-nvim-ultisnips",
+      "saadparwaiz1/cmp_luasnip",
+      "L3MON4D3/LuaSnip",
+      "rafamadriz/friendly-snippets"
     }
   }
 
