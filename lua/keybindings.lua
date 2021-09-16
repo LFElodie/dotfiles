@@ -25,6 +25,11 @@ keymap('', '<C-h>', '<C-w>h', {noremap = true})
 keymap('', '<C-j>', '<C-w>j', {noremap = true})
 keymap('', '<C-k>', '<C-w>k', {noremap = true})
 keymap('', '<C-l>', '<C-w>l', {noremap = true})
+
+-- buffer switch
+keymap('n', 'J', ':bp<cr>', {noremap = true})
+keymap('n', 'K', ':bn<cr>', {noremap = true})
+
 -- split window
 keymap('n', '<C-w>h', ':abo vsplit <cr>', {noremap = true})
 keymap('n', '<C-w>j', ':rightbelow split <cr>', {noremap = true})
