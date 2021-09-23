@@ -14,10 +14,16 @@ require('lspkind').init()
 --}}}
 
 -- nvim-cmp & snippets {{{
-
 local has_words_before = function()
+  if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
+    return false
+  end
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+
+local feedkey = function(key)
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), "n", true)
 end
 
 local cmp = require'cmp'
@@ -54,7 +60,7 @@ cmp.setup {
 
       -- set a name for each source
       vim_item.menu = ({
-        ultisnips = "[Snippets]",
+        luasnip = "[Snippets]",
         buffer = "[Buffer]",
         nvim_lsp = "[LSP]",
         nvim_lua = "[Lua]",
@@ -66,43 +72,38 @@ cmp.setup {
     ['<C-p>'] = cmp.mapping.select_prev_item(),
 		['<C-n>'] = cmp.mapping.select_next_item(),
     ["<C-j>"] = cmp.mapping(function()
-      if has_words_before() and luasnip.expand_or_jumpable() then
-        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-expand-or-jump', true, true, true), '', true)
+      if luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
       end
-    end, {
-      "i",
-      "s",
-    }),
-    ["<C-k>"] = cmp.mapping(function(fallback)
+    end, { "i", "s" }),
+
+    ["<C-k>"] = cmp.mapping(function()
       if luasnip.jumpable(-1) then
-        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-jump-prev', true, true, true), '', true)
+        luasnip.jump(-1)
       end
-    end, {
-      "i",
-      "s",
-    }),
+    end, { "i", "s" }),
+
     ["<Tab>"] = cmp.mapping(function(fallback)
       if vim.fn.pumvisible() == 1 then
-        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-n>', true, true, true), 'n', true)
-      elseif has_words_before() and luasnip.expand_or_jumpable() then
-        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-expand-or-jump', true, true, true), '', true)
+        feedkey("<C-n>")
+      elseif luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      elseif has_words_before() then
+        cmp.complete()
+      else
+        fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
+      end
+    end, { "i", "s" }),
+
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
+      if vim.fn.pumvisible() == 1 then
+        feedkey("<C-p>")
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
       else
         fallback()
       end
-    end, {
-      "i",
-      "s",
-    }),
-    ["<S-Tab>"] = cmp.mapping(function()
-      if vim.fn.pumvisible() == 1 then
-        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-p>', true, true, true), 'n', true)
-      elseif luasnip.jumpable(-1) then
-        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-jump-prev', true, true, true), '', true)
-      end
-    end, {
-      "i",
-      "s",
-    }),
+    end, { "i", "s" }),
   },
 }
 
@@ -229,7 +230,7 @@ local ts_config = require('nvim-treesitter.configs')
 
 ts_config.setup {
   ensure_installed = {
-    'c', 'cpp', 'css', 'bash', 'html', 'javascript', 'lua', 'typescript'
+    'c', 'cpp', 'css', 'bash', 'html', 'javascript', 'lua', 'typescript', 'python'
   };
   highlight = { enable = true, use_languagetree = true };
   indent = { enable = true },
