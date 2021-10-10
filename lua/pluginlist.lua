@@ -70,5 +70,9 @@ require('packer').startup(function()
   use {
     'akinsho/nvim-bufferline.lua', requires = 'kyazdani42/nvim-web-devicons'
   }
+  use 'szw/vim-maximizer'
+
+  -- debug tool
+  use 'puremourning/vimspector'
 
 end)

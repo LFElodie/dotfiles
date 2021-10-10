@@ -155,3 +155,30 @@ require('nvim_comment').setup({
 
 
 -- }}}
+
+-- maximizer {{{
+
+vim.api.nvim_set_keymap('n', '<leader>m', ":MaximizerToggle!<CR>", { noremap = true})
+
+-- }}}
+
+-- debug {{{
+
+vim.api.nvim_set_keymap('n', '<leader>dd', ":call vimspector#Launch()<cr>", { noremap = true})
+vim.api.nvim_set_keymap('n', '<leader>de', ":call vimspector#Reset()<cr>", { noremap = true})
+
+vim.api.nvim_set_keymap('n', '<leader>dl', ":call vimspector#StepInto()<cr>", { noremap = true})
+vim.api.nvim_set_keymap('n', '<leader>dj', ":call vimspector#StepOver()<cr>", { noremap = true})
+vim.api.nvim_set_keymap('n', '<leader>dk', ":call vimspector#StepOut()<cr>", { noremap = true})
+vim.api.nvim_set_keymap('n', '<leader>d_', ":call vimspector#Restart()<cr>", { noremap = true})
+vim.api.nvim_set_keymap('n', '<leader>d<space>', ":call vimspector#Continue()<cr>", { noremap = true})
+
+vim.api.nvim_set_keymap('n', '<leader>drc', ":call vimspector#RunToCursor()<cr>", { noremap = true})
+vim.api.nvim_set_keymap('n', '<leader>dbp', ":call vimspector#ToggleBreakpoint()<cr>", { noremap = true})
+vim.api.nvim_set_keymap('n', '<leader>dcbp', ":call vimspector#ToggleAdvancedBreakpoint()<cr>", { noremap = true})
+vim.api.nvim_set_keymap('n', '<leader>dX', ":call vimspector#ClearBreakpoints()<cr>", { noremap = true})
+
+vim.api.nvim_set_keymap('n', '<leader>di', "", { noremap = true})
+vim.api.nvim_set_keymap('x', '<leader>di', "", { noremap = true})
+
+-- }}}
