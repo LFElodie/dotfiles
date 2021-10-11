@@ -27,8 +27,6 @@ local feedkey = function(key)
 end
 
 local cmp = require'cmp'
-local luasnip = require('luasnip')
-require("luasnip/loaders/from_vscode").lazy_load()
 
 cmp.setup {
   completion = {
@@ -36,11 +34,11 @@ cmp.setup {
   },
   snippet = {
       expand = function(args)
-        require'luasnip'.lsp_expand(args.body)
+        vim.fn["UltiSnips#Anon"](args.body)
     end
   },
   sources = {
-    { name = "luasnip"},
+    { name = "ultisnips"},
     { name = "nvim_lua"},
     { name = "nvim_lsp"},
     { 
@@ -60,7 +58,7 @@ cmp.setup {
 
       -- set a name for each source
       vim_item.menu = ({
-        luasnip = "[Snippets]",
+        ultisnips = "[Snippets]",
         buffer = "[Buffer]",
         nvim_lsp = "[LSP]",
         nvim_lua = "[Lua]",
@@ -72,22 +70,22 @@ cmp.setup {
     ['<C-p>'] = cmp.mapping.select_prev_item(),
 		['<C-n>'] = cmp.mapping.select_next_item(),
     ["<C-j>"] = cmp.mapping(function()
-      if luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
+      if vim.fn["UltiSnips#CanExpandSnippet"]() == 1 then
+        feedkey("<Cmd>call UltiSnips#ExpandSnippet()<CR>")
+      elseif vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
+        feedkey("<Cmd>call UltiSnips#JumpForwards()<CR>")
       end
     end, { "i", "s" }),
 
     ["<C-k>"] = cmp.mapping(function()
-      if luasnip.jumpable(-1) then
-        luasnip.jump(-1)
+      if vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
+        feedkey("<Cmd>call UltiSnips#JumpBackwards()<CR>")
       end
     end, { "i", "s" }),
 
     ["<Tab>"] = cmp.mapping(function(fallback)
-      if vim.fn.pumvisible() == 1 then
-        feedkey("<C-n>")
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
+      if cmp.visible() then
+        cmp.select_next_item()
       elseif has_words_before() then
         cmp.complete()
       else
@@ -96,10 +94,8 @@ cmp.setup {
     end, { "i", "s" }),
 
     ["<S-Tab>"] = cmp.mapping(function(fallback)
-      if vim.fn.pumvisible() == 1 then
-        feedkey("<C-p>")
-      elseif luasnip.jumpable(-1) then
-        luasnip.jump(-1)
+      if cmp.visible() then
+        cmp.select_prev_item()
       else
         fallback()
       end

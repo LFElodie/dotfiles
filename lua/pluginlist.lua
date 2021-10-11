@@ -30,9 +30,9 @@ require('packer').startup(function()
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-path",
-      "saadparwaiz1/cmp_luasnip",
-      "L3MON4D3/LuaSnip",
-      "rafamadriz/friendly-snippets"
+      "SirVer/ultisnips",
+      "honza/vim-snippets",
+      "quangnguyen30192/cmp-nvim-ultisnips",
     }
   }
 
@@ -57,18 +57,19 @@ require('packer').startup(function()
   use 'gruvbox-community/gruvbox'
   use 'ryanoasis/vim-devicons'
   use {
-      'nvim-telescope/telescope.nvim',
-      requires = {
-          'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim',
-          'nvim-telescope/telescope-fzy-native.nvim'
-      }
+    'nvim-telescope/telescope.nvim',
+    requires = {
+      'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope-fzy-native.nvim'
+    }
   }
   use {
-      'hoob3rt/lualine.nvim',
-      requires = {'kyazdani42/nvim-web-devicons', opt = true}
+    'hoob3rt/lualine.nvim',
+    requires = {'kyazdani42/nvim-web-devicons', opt = true}
   }
   use {
-    'akinsho/nvim-bufferline.lua', requires = 'kyazdani42/nvim-web-devicons'
+    'akinsho/nvim-bufferline.lua', 
+    requires = 'kyazdani42/nvim-web-devicons'
   }
   use 'szw/vim-maximizer'
 
