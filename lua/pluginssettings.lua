@@ -39,8 +39,14 @@ require('gitsigns').setup {
 -- Telescope {{{
 require('telescope').setup {
   defaults = {
+    file_sorter = require('telescope.sorters').get_fzy_sorter,
+    color_devicons = true,
+    file_previewer = require('telescope.previewers').vim_buffer_cat.new,
+    grep_previewer = require('telescope.previewers').vim_buffer_vimgrep.new,
+    qflist_previewer = require('telescope.previewers').vim_buffer_qflist.new,
     file_ignore_patterns = {
       "build",
+      "dotbot"
     },
     mappings = {
       i = {
@@ -50,9 +56,10 @@ require('telescope').setup {
     },
   },
 }
+require('telescope').load_extension('fzy_native')
 
 vim.api.nvim_set_keymap('n', '<leader>sb', [[<cmd>lua require('telescope.builtin').buffers()<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>sf', [[<cmd>lua require('telescope.builtin').find_files({previewer = false})<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>sf', [[<cmd>lua require('telescope.builtin').find_files()<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>sh', [[<cmd>lua require('telescope.builtin').help_tags()<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>sd', [[<cmd>lua require('telescope.builtin').grep_string()<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>sg', [[<cmd>lua require('telescope.builtin').live_grep()<CR>]], { noremap = true, silent = true })
