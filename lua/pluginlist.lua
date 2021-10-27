@@ -46,7 +46,6 @@ require('packer').startup(function()
   } 
 
   -- tools
-  use 'tpope/vim-commentary' -- "gc" to comment visual regions/lines
   use 'tpope/vim-surround' -- surroundings
   use'mg979/vim-visual-multi'
   -- use 'tpope/vim-sleuth' -- auto indent
