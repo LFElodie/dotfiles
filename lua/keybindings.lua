@@ -14,9 +14,6 @@ keymap('n', 'U', '<C-r>', { noremap = true })
 -- Q quit
 keymap('n', 'Q', ':q<cr>', { noremap = true })
 
-keymap('', '<C-a>', '<Home>', {noremap = true})
-keymap('', '<C-e>', '<End>', {noremap = true})
-
 keymap('i', '<C-h>', '<left>', {noremap = true})
 keymap('i', '<C-l>', '<right>', {noremap = true})
 

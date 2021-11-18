@@ -12,8 +12,8 @@ vim.g.indent_blankline_show_trailing_blankline_indent = false
 
 vim.api.nvim_set_keymap('n', '<leader>gs', [[<cmd>G<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>gd', [[<cmd>Gvdiffsplit!<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>gf', [[<cmd>diffget //2<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>gj', [[<cmd>diffget //3<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>gh', [[<cmd>diffget //2<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>gl', [[<cmd>diffget //3<CR>]], { noremap = true, silent = true })
 
 -- }}}
 

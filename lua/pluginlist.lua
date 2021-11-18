@@ -30,10 +30,19 @@ require('packer').startup(function()
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-path",
-      "SirVer/ultisnips",
-      "honza/vim-snippets",
+      "hrsh7th/cmp-cmdline",
       "quangnguyen30192/cmp-nvim-ultisnips",
     }
+  }
+  use {'SirVer/ultisnips',
+    requires = {{'honza/vim-snippets', rtp = '.'}},
+    config = function()
+      vim.g.UltiSnipsExpandTrigger = '<Plug>(ultisnips_expand)'
+      vim.g.UltiSnipsJumpForwardTrigger = '<Plug>(ultisnips_jump_forward)'
+      vim.g.UltiSnipsJumpBackwardTrigger = '<Plug>(ultisnips_jump_backward)'
+      vim.g.UltiSnipsListSnippets = '<c-x><c-s>'
+      vim.g.UltiSnipsRemoveSelectModeMappings = 0
+    end
   }
 
   use 'rhysd/vim-clang-format'
