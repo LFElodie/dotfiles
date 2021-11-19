@@ -9,7 +9,7 @@ keymap('v', '<leader>f', ':ClangFormat<cr>', { noremap = true })
 
 -- Completion menu symbols {{{
 
-require('lspkind').init()
+local lspkind = require('lspkind')
 
 --}}}
 
@@ -22,8 +22,8 @@ local has_words_before = function()
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
-local feedkey = function(key)
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), "n", true)
+local t = function(str)
+    return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
 local cmp = require'cmp'
@@ -52,19 +52,15 @@ cmp.setup {
     { name = "path"},
   },
   formatting = {
-    format = function(entry, vim_item)
-      -- fancy icons and a name of kind
-      vim_item.kind = require("lspkind").presets.default[vim_item.kind] .. " " .. vim_item.kind
-
-      -- set a name for each source
-      vim_item.menu = ({
-        ultisnips = "[Snippets]",
+    format = lspkind.cmp_format({
+      with_text = true,
+      menu = ({
         buffer = "[Buffer]",
         nvim_lsp = "[LSP]",
+        ultisnips = "[Snippets]",
         nvim_lua = "[Lua]",
-      })[entry.source.name]
-      return vim_item
-    end,
+      })
+    }),
   },
   mapping = {
     ['<Down>'] = cmp.mapping(cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }), {'i'}),
@@ -105,26 +101,42 @@ cmp.setup {
     ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), {'i', 'c'}),
     ['<C-e>'] = cmp.mapping({ i = cmp.mapping.close(), c = cmp.mapping.close() }),
     ['<CR>'] = cmp.mapping({
-        i = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
-        c = function(fallback)
-            if cmp.visible() then
-                cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+        i = function(fallback)
+            if cmp.visible() then 
+              local entry = cmp.get_selected_entry()
+              if not entry then
+                cmp.close()
+              end
+              cmp.confirm()
             else
-                fallback()
+              fallback()
             end
-        end
+        end,
+        c = function(fallback)
+            if cmp.visible() then 
+              local entry = cmp.get_selected_entry()
+              if not entry then
+                return fallback()
+              end
+              cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+              vim.api.nvim_feedkeys(t('<CR>'), 'n', true)
+            else
+              fallback()
+            end
+            
+        end,
     }),
     ["<C-j>"] = cmp.mapping(function()
       if vim.fn["UltiSnips#CanExpandSnippet"]() == 1 then
-        feedkey("<Cmd>call UltiSnips#ExpandSnippet()<CR>")
+        vim.api.nvim_feedkeys(t('<Cmd>call UltiSnips#ExpandSnippet()<CR>'), 'n', true)
       elseif vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
-        vim.api.nvim_feedkeys(t("<Plug>(ultisnips_jump_forward)"), 'm', true)
+        vim.api.nvim_feedkeys(t('<Cmd>call UltiSnips#JumpForwards()<CR>'), 'n', true)
       end
     end, { "i", "s" }),
 
     ["<C-k>"] = cmp.mapping(function()
       if vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
-        return vim.api.nvim_feedkeys( t("<Plug>(ultisnips_jump_backward)"), 'm', true)
+        vim.api.nvim_feedkeys(t('<Cmd>call UltiSnips#JumpBackwards()<CR>'), 'n', true)
       end
     end, { "i", "s" }),
 
@@ -139,15 +151,6 @@ cmp.setup {
         i = function(fallback)
             if cmp.visible() then
                 cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-            elseif vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
-                vim.api.nvim_feedkeys(t("<Plug>(ultisnips_jump_forward)"), 'm', true)
-            else
-                fallback()
-            end
-        end,
-        s = function(fallback)
-            if vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
-                vim.api.nvim_feedkeys(t("<Plug>(ultisnips_jump_forward)"), 'm', true)
             else
                 fallback()
             end
@@ -164,15 +167,6 @@ cmp.setup {
         i = function(fallback)
             if cmp.visible() then
                 cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
-            elseif vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
-                return vim.api.nvim_feedkeys( t("<Plug>(ultisnips_jump_backward)"), 'm', true)
-            else
-                fallback()
-            end
-        end,
-        s = function(fallback)
-            if vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
-                return vim.api.nvim_feedkeys( t("<Plug>(ultisnips_jump_backward)"), 'm', true)
             else
                 fallback()
             end
