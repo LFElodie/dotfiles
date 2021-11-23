@@ -15,9 +15,6 @@ local lspkind = require('lspkind')
 
 -- nvim-cmp & snippets {{{
 local has_words_before = function()
-  if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
-    return false
-  end
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
@@ -26,7 +23,9 @@ local t = function(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
-local cmp = require'cmp'
+local luasnip = require("luasnip")
+local cmp = require("cmp")
+require("luasnip/loaders/from_vscode").load()
 
 cmp.setup {
   completion = {
@@ -34,11 +33,11 @@ cmp.setup {
   },
   snippet = {
       expand = function(args)
-        vim.fn["UltiSnips#Anon"](args.body)
+        require('luasnip').lsp_expand(args.body)
     end
   },
   sources = {
-    { name = "ultisnips"},
+    { name = "luasnip"},
     { name = "nvim_lua"},
     { name = "nvim_lsp"},
     { 
@@ -57,7 +56,7 @@ cmp.setup {
       menu = ({
         buffer = "[Buffer]",
         nvim_lsp = "[LSP]",
-        ultisnips = "[Snippets]",
+        luasnip = "[Snippets]",
         nvim_lua = "[Lua]",
       })
     }),
@@ -101,17 +100,7 @@ cmp.setup {
     ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), {'i', 'c'}),
     ['<C-e>'] = cmp.mapping({ i = cmp.mapping.close(), c = cmp.mapping.close() }),
     ['<CR>'] = cmp.mapping({
-        i = function(fallback)
-            if cmp.visible() then 
-              local entry = cmp.get_selected_entry()
-              if not entry then
-                cmp.close()
-              end
-              cmp.confirm()
-            else
-              fallback()
-            end
-        end,
+        i = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
         c = function(fallback)
             if cmp.visible() then 
               local entry = cmp.get_selected_entry()
@@ -126,52 +115,41 @@ cmp.setup {
             
         end,
     }),
-    ["<C-j>"] = cmp.mapping(function()
-      if vim.fn["UltiSnips#CanExpandSnippet"]() == 1 then
-        vim.api.nvim_feedkeys(t('<Cmd>call UltiSnips#ExpandSnippet()<CR>'), 'n', true)
-      elseif vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
-        vim.api.nvim_feedkeys(t('<Cmd>call UltiSnips#JumpForwards()<CR>'), 'n', true)
+    ["<C-j>"] = cmp.mapping(function(fallback)
+      if luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      elseif has_words_before() then
+        cmp.complete()
+      else
+        fallback()
       end
     end, { "i", "s" }),
 
-    ["<C-k>"] = cmp.mapping(function()
-      if vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
-        vim.api.nvim_feedkeys(t('<Cmd>call UltiSnips#JumpBackwards()<CR>'), 'n', true)
+    ["<C-k>"] = cmp.mapping(function(fallback)
+      if luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
       end
     end, { "i", "s" }),
 
-    ["<Tab>"] = cmp.mapping({
-        c = function()
-            if cmp.visible() then
-                cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-            else
-                cmp.complete()
-            end
-        end,
-        i = function(fallback)
-            if cmp.visible() then
-                cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-            else
-                fallback()
-            end
-        end
-    }),
-    ["<S-Tab>"] = cmp.mapping({
-        c = function()
-            if cmp.visible() then
-                cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
-            else
-                cmp.complete()
-            end
-        end,
-        i = function(fallback)
-            if cmp.visible() then
-                cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
-            else
-                fallback()
-            end
-        end
-    }),
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif has_words_before() then
+        cmp.complete()
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
   },
 }
 
