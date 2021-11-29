@@ -38,7 +38,9 @@ require('packer').startup(function()
   use 'saadparwaiz1/cmp_luasnip'
   use 'rafamadriz/friendly-snippets'
 
+  -- formater
   use 'rhysd/vim-clang-format'
+  use 'bennyyip/vim-yapf'
 
   -- git
   use 'tpope/vim-fugitive' -- Git commands in nvim

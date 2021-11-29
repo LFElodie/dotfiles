@@ -1,9 +1,14 @@
 local keymap = vim.api.nvim_set_keymap
 
--- clangformat {{{
+-- format {{{
 
+-- ClangFormat
 keymap('n', '<leader>f', ':<c-u>ClangFormat<cr>', { noremap = true })
 keymap('v', '<leader>f', ':ClangFormat<cr>', { noremap = true })
+
+-- yapf
+keymap('n', '<leader>cf', ':<c-u>Yapf<cr>', { noremap = true })
+keymap('v', '<leader>cf', ':Yapf<cr>', { noremap = true })
 
 -- }}}
 
