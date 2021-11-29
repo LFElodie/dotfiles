@@ -24,6 +24,24 @@ local t = function(str)
 end
 
 local luasnip = require("luasnip")
+
+local types = require("luasnip.util.types")
+
+luasnip.config.setup({
+	ext_opts = {
+		[types.choiceNode] = {
+			active = {
+				virt_text = {{"●", "GruvboxOrange"}}
+			}
+		},
+		[types.insertNode] = {
+			active = {
+				virt_text = {{"●", "GruvboxBlue"}}
+			}
+		}
+	},
+})
+
 local cmp = require("cmp")
 require("luasnip/loaders/from_vscode").load()
 
@@ -42,7 +60,7 @@ cmp.setup {
     { name = "nvim_lsp"},
     { 
       name = "buffer",
-      opts = {
+      option = {
         get_bufnrs = function()
           return vim.api.nvim_list_bufs()
         end
@@ -116,7 +134,7 @@ cmp.setup {
         end,
     }),
     ["<C-j>"] = cmp.mapping(function(fallback)
-      if luasnip.expand_or_jumpable() then
+      if luasnip.expand_or_locally_jumpable() then
         luasnip.expand_or_jump()
       elseif has_words_before() then
         cmp.complete()
@@ -183,7 +201,7 @@ cmp.setup.cmdline(':', {
     local opts = { noremap = true, silent = true }
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-    -- vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
     -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
