@@ -32,6 +32,7 @@ require('packer').startup(function()
       "hrsh7th/cmp-nvim-lua",
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-cmdline",
+      "hrsh7th/cmp-copilot",
     }
   }
   use 'L3MON4D3/LuaSnip'
@@ -78,5 +79,7 @@ require('packer').startup(function()
 
   -- debug tool
   use 'puremourning/vimspector'
+
+  use 'github/copilot.vim'
 
 end)
