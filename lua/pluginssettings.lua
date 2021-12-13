@@ -191,3 +191,17 @@ vim.api.nvim_set_keymap('n', '<leader>di', "", { noremap = true})
 vim.api.nvim_set_keymap('x', '<leader>di', "", { noremap = true})
 
 -- }}}
+
+-- indent blankline {{{
+
+vim.opt.list = true
+vim.opt.listchars:append("space:⋅")
+vim.opt.listchars:append("eol:↴")
+
+require("indent_blankline").setup {
+    space_char_blankline = " ",
+    show_current_context = true,
+    show_current_context_start = true,
+}
+
+-- }}}

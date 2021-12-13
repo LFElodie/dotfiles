@@ -59,6 +59,7 @@ require('packer').startup(function()
   use 'terrortylor/nvim-comment'
   use 'christoomey/vim-tmux-navigator'
   use 'gruvbox-community/gruvbox'
+  use 'lukas-reineke/indent-blankline.nvim'
   use 'ryanoasis/vim-devicons'
   use {
     'nvim-telescope/telescope.nvim',
