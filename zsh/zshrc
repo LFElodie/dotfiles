@@ -42,3 +42,11 @@ export MYVIMRC="$HOME/.config/nvim/init.vim"
 
 export VISUAL=nvim
 export EDITOR=nvim
+
+unsetopt nomatch
+
+# export http_proxy="http://localhost:7890"
+# export https_proxy="http://localhost:7890"
+# source /opt/ros/noetic/setup.zsh
+# source ~/catkin_ws/devel/setup.zsh
+# DISABLE_AUTO_UPDATE="true"
