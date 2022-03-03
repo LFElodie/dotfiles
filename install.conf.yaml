@@ -15,9 +15,7 @@
     ~/.oh-my-zsh/custom/plugins:
       glob: true
       path: zsh/custom/plugins/*
-    # ~/.config/nvim/init.vim: init.vim
     ~/.config/nvim/init.lua: init.lua
-    ~/.config/nvim/UltiSnips: snippets
     ~/.config/nvim/lua:
       glob: true
       path: lua/*
