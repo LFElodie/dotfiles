@@ -41,3 +41,5 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+build/
+compile_commands.json
