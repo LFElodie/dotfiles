@@ -77,6 +77,7 @@ require('packer').startup(function()
     requires = 'kyazdani42/nvim-web-devicons'
   }
   use 'szw/vim-maximizer'
+  use 'chrisbra/csv.vim'
 
   -- debug tool
   use 'puremourning/vimspector'

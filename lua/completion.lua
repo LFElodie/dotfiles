@@ -37,22 +37,18 @@ local luasnip = require("luasnip")
 local types = require("luasnip.util.types")
 
 luasnip.config.setup({
-	ext_opts = {
-		[types.choiceNode] = {
-			active = {
-				virt_text = {{"●", "GruvboxOrange"}}
-			}
-		},
-		[types.insertNode] = {
-			active = {
-				virt_text = {{"●", "GruvboxBlue"}}
-			}
-		}
-	},
+  -- Update more often, :h events for more info.
+	updateevents = "TextChanged,TextChangedI",
+  -- treesitter-hl has 100, use something higher (default is 200).
+	ext_base_prio = 300,
+  -- minimal increase in priority.
+	ext_prio_increase = 1,
+	enable_autosnippets = true,
 })
 
+require("luasnip/loaders/from_vscode").lazy_load()
+
 local cmp = require("cmp")
-require("luasnip/loaders/from_vscode").load()
 
 cmp.setup {
   completion = {
