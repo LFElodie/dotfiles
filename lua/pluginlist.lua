@@ -20,8 +20,13 @@ require('packer').startup(function()
   use 'neovim/nvim-lspconfig'
   use 'nvim-lua/lsp_extensions.nvim'
   use 'onsails/lspkind-nvim'
-  use 'nvim-treesitter/nvim-treesitter'
-  use 'nvim-treesitter/nvim-treesitter-textobjects'
+  use {
+    'nvim-treesitter/nvim-treesitter',
+    run = function() require('nvim-treesitter.install').update({ with_sync = true }) end,
+  }
+  use 'nvim-treesitter/nvim-treesitter-refactor'
+  use 'nvim-treesitter/nvim-treesitter-context'-- Lua
+  use 'p00f/nvim-ts-rainbow'
   use 'windwp/nvim-autopairs'
   -- Install nvim-cmp, and buffer source as a dependency
   use {
