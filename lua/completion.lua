@@ -18,10 +18,6 @@ local lspkind = require('lspkind')
 
 --}}}
 
-vim.g.copilot_no_tab_map = true
-vim.g.copilot_assume_mapped = true
-vim.g.copilot_tab_fallback = ""
-
 -- nvim-cmp & snippets {{{
 local has_words_before = function()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -61,7 +57,6 @@ cmp.setup {
   },
   sources = {
     { name = "path"},
-    { name = "copilot"},
     { name = "luasnip"},
     { name = "nvim_lua"},
     { name = "nvim_lsp"},
@@ -165,12 +160,6 @@ cmp.setup {
         cmp.complete()
       else
         fallback()
-        local copilot_keys = vim.fn["copilot#Accept"]("")
-        if copilot_keys ~= "" then
-            vim.api.nvim_feedkeys(copilot_keys, "i", true)
-        else
-            fallback()
-        end
       end
     end, { "i", "s" }),
 
@@ -233,7 +222,7 @@ cmp.setup.cmdline(':', {
   end
 
   local capabilities = vim.lsp.protocol.make_client_capabilities()
-  capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+  capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
   local border = {
         {"🭽", "FloatBorder"},
