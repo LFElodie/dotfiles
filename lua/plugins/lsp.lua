@@ -1,8 +1,8 @@
 return {
-  {
-    "neovim/nvim-lspconfig"
-  },
-  {
-    "nvim-lua/lsp_extensions.nvim"
-  }
+	{
+		"neovim/nvim-lspconfig",
+	},
+	{
+		"nvim-lua/lsp_extensions.nvim",
+	},
 }

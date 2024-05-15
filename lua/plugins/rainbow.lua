@@ -1,3 +1,3 @@
 return {
-  "p00f/nvim-ts-rainbow"
+  "p00f/nvim-ts-rainbow",
 }
