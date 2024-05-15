@@ -17,12 +17,12 @@ require('gitsigns').setup {
     changedelete = { hl = 'GitGutterChange', text = '~' },
   },
   current_line_blame = true,
-  on_attach = function(bufnr)
+  on_attach = function(buffer)
     local gs = package.loaded.gitsigns
 
     local function map(mode, l, r, opts)
       opts = opts or {}
-      opts.buffer = bufnr
+      opts.buffer = buffer
       vim.keymap.set(mode, l, r, opts)
     end
 
@@ -151,18 +151,18 @@ require'lualine'.setup {
 
 vim.opt.termguicolors = true
 require("bufferline").setup{
-  options = {
-    diagnostics = "nvim_lsp",
-    diagnostics_indicator = function(count, level, diagnostics_dict, context)
-      local s = " "
-      for e, n in pairs(diagnostics_dict) do
-        local sym = e == "error" and " "
-        or (e == "warning" and " " or "" )
-        s = s .. n .. sym
-      end
-      return s
-    end,
-  }
+  -- options = {
+  --   diagnostics = "nvim_lsp",
+  --   diagnostics_indicator = function(count, level, diagnostics_dict, context)
+  --     local s = " "
+  --     for e, n in pairs(diagnostics_dict) do
+  --       local sym = e == "error" and " "
+  --       or (e == "warning" and " " or "" )
+  --       s = s .. n .. sym
+  --     end
+  --     return s
+  --   end,
+  -- }
 }
 
 
@@ -221,11 +221,7 @@ vim.opt.list = true
 vim.opt.listchars:append("space:⋅")
 vim.opt.listchars:append("eol:↴")
 
-require("indent_blankline").setup {
-    space_char_blankline = " ",
-    show_current_context = true,
-    show_current_context_start = true,
-}
+require("ibl").setup {}
 
 vim.g.indent_blankline_char = '┊'
 vim.g.indent_blankline_filetype_exclude = { 'help', 'packer' }
