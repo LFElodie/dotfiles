@@ -23,9 +23,9 @@ return {
         }, -- 确保安装必要的 linter 和 formatter
         automatic_setup = true,
       })
-      require("mason-nvim-dap").setup({
-        ensure_installed = { "cppdbg", "python" }, -- 确保安装必要的调试适配器
-      })
+      -- require("mason-nvim-dap").setup({
+      --   ensure_installed = { "cppdbg", "python" }, -- 确保安装必要的调试适配器
+      -- })
     end,
   },
   {

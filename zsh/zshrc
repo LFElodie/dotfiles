@@ -6,6 +6,9 @@ export TERM=xterm-256color
 ##### Zsh/Oh-my-Zsh Configuration
 export ZSH="$HOME/.oh-my-zsh"
 
+DISABLE_AUTO_UPDATE="true"
+DISABLE_UPDATE_PROMPT="true"
+
 ZSH_THEME="ys"
 plugins=(
     git
@@ -20,6 +23,7 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 export PATH="$PATH:/usr/bin/"
+export PATH="$PATH:/usr/include/"
 
 alias gs="git status"
 alias s="tmux"
@@ -33,28 +37,37 @@ alias dka="docker attach"
 alias dkrm='docker rm'
 alias dkrmi='docker rmi'
 
-alias cw='cd ~/catkin_ws'
-alias cs='cd ~/catkin_ws/src'
-alias cm='cd ~/catkin_ws && catkin_make'
-
 export MYZSHRC="$HOME/.zshrc"
 export MYTMUXCONF="$HOME/.tmux.conf"
-export MYVIMRC="$HOME/.config/nvim/init.vim"
 
 export VISUAL=nvim
 export EDITOR=nvim
 
 unsetopt nomatch
 
-# export http_proxy="http://localhost:7890"
-# export https_proxy="http://localhost:7890"
-# source /opt/ros/noetic/setup.zsh
+# for gfw
+export http_proxy="http://127.0.0.1:7890"
+export https_proxy="http://127.0.0.1:7890"
+
+# for ros1 noetic
+# alias cw='cd ~/catkin_ws'
+# alias cs='cd ~/catkin_ws/src'
+# alias cm='cd ~/catkin_ws && catkin build'
 # source ~/catkin_ws/devel/setup.zsh
+# source /opt/ros/noetic/setup.zsh
 
 # export ROS_HOSTNAME=ly_slave
 # export ROS_MASTER_URI=http://ly_master:11311
 # export ROS_HOSTNAME=localhost
 # export ROS_MASTER_URI=http://localhost:11311
-#
-# DISABLE_AUTO_UPDATE="true"
-export ROSCONSOLE_FORMAT='[${severity}] [${time}] [${node}]: ${message}'
+
+# for ros2 rolling
+source ~/ros2_ws/install/setup.zsh
+source /opt/ros/humble/setup.zsh
+eval "$(register-python-argcomplete3 ros2)"
+eval "$(register-python-argcomplete3 colcon)"
+alias cw='cd ~/ros2_ws'
+alias cs='cd ~/ros2_ws/src'
+alias cm='cd ~/ros2_ws && colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --symlink-install'
+
+# export ROSCONSOLE_FORMAT='[${severity}] [${time}] [${node}]: ${message}'
