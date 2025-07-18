@@ -7,6 +7,7 @@ return {
     end,
     config = function()
       require("nvim-treesitter.configs").setup({
+        auto_install = true,
         ensure_installed = {
           "c",
           "cpp",
@@ -17,13 +18,12 @@ return {
           "lua",
           "typescript",
           "python",
+          "json",
+          "yaml",
+          "markdown",
+          "cmake"
         },
         highlight = { enable = true, use_languagetree = true },
-        rainbow = {
-          enable = true,
-          extended_mode = true,
-          max_file_lines = nil,
-        },
         refactor = {
           highlight_definitions = {
             enable = true,
@@ -34,7 +34,6 @@ return {
         },
         indent = { enable = true },
         indent_on_enter = { enable = true },
-        autopairs = { enable = true },
       })
     end,
   },
@@ -42,7 +41,11 @@ return {
   {
     "nvim-treesitter/nvim-treesitter-context",
     config = function()
-      require("treesitter-context").setup({})
+      require("treesitter-context").setup({
+        max_lines = 5,          -- 限制最大显示上下文行数
+        multiline_threshold = 2 -- 超过多少行才展示
+      })
+
     end,
   },
 }

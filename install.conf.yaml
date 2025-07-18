@@ -21,7 +21,12 @@
       path: lua/*
     ~/.config/ranger: ranger
     ~/.gitignore_global: gitignore_global
+    ~/.local/share/fonts:
+      glob: true
+      path: font
 
 - shell:
   - [bash set_git.sh, Setting git]
-
+  - [bash install_scripts/install_font.sh, Install nerd font]
+  - [bash install_scripts/setup_mirrors.sh, Setup apt/pip mirrors]
+  - [bash install_scripts/setup_packages.sh, Install packages and Neovim/nightly/node]

@@ -21,6 +21,20 @@ return {
             file_status = true,
             path = 2,
           },
+          {
+            function()
+              local clients = vim.lsp.get_clients({ bufnr = 0 })
+              if not clients or #clients == 0 then
+                return "No LSP"
+              end
+              local names = {}
+              for _, client in ipairs(clients) do
+                table.insert(names, client.name)
+              end
+              return " " .. table.concat(names, ", ")
+            end,
+            color = { fg = "#a6e3a1" },
+          }
         },
         lualine_x = {
           "diff",

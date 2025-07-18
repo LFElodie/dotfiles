@@ -71,3 +71,9 @@ alias cs='cd ~/ros2_ws/src'
 alias cm='cd ~/ros2_ws && colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --symlink-install'
 
 # export ROSCONSOLE_FORMAT='[${severity}] [${time}] [${node}]: ${message}'
+export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+
+# export TURTLEBOT3_MODEL=waffle
+# export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:$HOME/.gazebo/models
+

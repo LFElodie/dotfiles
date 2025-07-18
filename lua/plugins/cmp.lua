@@ -6,6 +6,7 @@ return {
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-nvim-lua",
+      "hrsh7th/cmp-nvim-lsp-signature-help",
       "hrsh7th/cmp-cmdline",
       "FelipeLema/cmp-async-path",
       "amarakon/nvim-cmp-buffer-lines",
@@ -18,6 +19,9 @@ return {
         completion = {
           completeopt = "menu,menuone,noselect",
         },
+        experimental = {
+          ghost_text = true,
+        },
         sources = {
           { name = "async_path" },
           { name = "nvim_lua" },
@@ -26,6 +30,7 @@ return {
           { name = "buffer-lines" },
           { name = "buffer", get_bufnrs = function() return vim.api.nvim_list_bufs() end },
           { name = "path" },
+          { name = "nvim_lsp_signature_help" },
         },
         mapping = {
           ['<Tab>'] = cmp.mapping(function(fallback)
@@ -53,8 +58,19 @@ return {
         },
       })
 
-      cmp.setup.cmdline({ "/", "?" }, { sources = { { name = "buffer" } } })
-      cmp.setup.cmdline(":", { sources = { { name = "path" }, { name = "cmdline" } } })
+      cmp.setup.cmdline({ "/", "?" }, {
+        mapping = cmp.mapping.preset.cmdline(), -- 解决 <Tab> 等键位问题
+        sources = {
+          { name = "buffer" }
+        }
+      })
+      cmp.setup.cmdline(":", {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          { name = "path" },
+          { name = "cmdline" },
+        }
+      })
 
     end,
   },
