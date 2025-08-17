@@ -8,7 +8,7 @@ return {
     config = function()
       require("mason").setup()
       require("mason-lspconfig").setup({
-        ensure_installed = { "pyright", "clangd", "cmake", "lua_ls"},
+        ensure_installed = { "pyright", "clangd", "cmake", "lua_ls", "ruff"},
         automatic_installation = true,
       })
       require("mason-tool-installer").setup({
@@ -17,6 +17,7 @@ return {
           "pyright",
           "black",
           "debugpy",
+          "ruff",
 
           -- C++/ROS2 工具链
           "clangd",
@@ -25,12 +26,6 @@ return {
         },
       })
 
-      vim.api.nvim_set_keymap(
-        "n",
-        "<leader>f",
-        ":lua vim.lsp.buf.format({async=true})<CR>",
-        { noremap = true, silent = true }
-      )
     end,
   },
 
@@ -71,17 +66,51 @@ return {
 
       end
 
-      -- 增强的 pyright 配置
+      -- 增强的 pyright 配置（专注类型检查）
       lspconfig.pyright.setup({
         capabilities = capabilities,
         on_attach = on_attach,
         settings = {
+          pyright = {
+            -- 使用 Ruff 的导入整理功能
+            disableOrganizeImports = true,
+          },
           python = {
             analysis = {
               typeCheckingMode = "basic",
               autoSearchPaths = true,
-              useLibraryCodeForTypes = true,
-              diagnosticMode = "workspace",
+              -- 忽略 Ruff 已经处理的诊断类型
+              diagnosticSeverityOverrides = {
+                reportMissingImports = false,    -- Ruff 的 E402 已经处理
+                reportUndefinedVariable = false, -- Ruff 的 F821 已经处理
+              },
+            },
+          },
+        },
+      })
+
+      -- Ruff (代码风格检查 + 格式化)
+      lspconfig.ruff.setup({
+        on_attach = function(client, bufnr)
+          -- 禁用 Ruff 的类型相关检查（交给 Pyright）
+          client.server_capabilities.hoverProvider = false
+
+          -- 绑定快捷键
+          vim.keymap.set("n", "<leader>f", function()
+            vim.lsp.buf.format({ async = true, filter = function(c) return c.name == "ruff" end })
+          end, { buffer = bufnr, desc = "Format file with Ruff" })
+
+          vim.keymap.set("v", "<leader>f", ":'<,'>!ruff format --line-length=140 -<CR>", { desc = "Ruff format selection" })
+        end,
+        init_options = {
+          settings = {
+            -- 启用 Ruff 的代码检查和格式化 (兼容 Black)
+            args = {
+              "--select=E,F,W,B,I,D",  -- 默认检查的规则
+              "--ignore=E203,W503,F841,F401",    -- 忽略与 Black 冲突的规则
+              "--line-length=140",      -- Black 默认行长度
+              "--format=black",        -- 启用 Black 兼容格式化
+              "--unfixable=F841,F401", -- 避免与 Pyright 冲突的修复
             },
           },
         },
@@ -104,7 +133,7 @@ return {
             "install",
             "build",
             "colcon.meta"
-          )(fname) or lspconfig.util.path.dirname(fname)
+          )(fname) or vim.fs.dirname(fname)
         end,
         on_attach = on_attach,
       })
@@ -159,8 +188,13 @@ return {
               -- Always show messages on all lines for multiline diagnostics
               always_show = false,
           },
+          show_source = {
+            enabled = true,
+            if_many = false,
+          },
         }
       })
+      vim.diagnostic.config({ virtual_text = false }) -- Only if needed in your configuration, if you already have native LSP diagnostics
     end
   },
   {
