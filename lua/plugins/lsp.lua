@@ -3,11 +3,26 @@ return {
     "williamboman/mason.nvim",
     dependencies = {
       "williamboman/mason-lspconfig.nvim",
+      "WhoIsSethDaniel/mason-tool-installer.nvim",
     },
     config = function()
       require("mason").setup()
       require("mason-lspconfig").setup({
-        ensure_installed = { "pyright", "clangd", "cmake", "lua_ls" },
+        ensure_installed = { "pyright", "clangd", "cmake", "lua_ls"},
+        automatic_installation = true,
+      })
+      require("mason-tool-installer").setup({
+        ensure_installed = {
+          -- Python 工具链
+          "pyright",
+          "black",
+          "debugpy",
+
+          -- C++/ROS2 工具链
+          "clangd",
+          "clang-format", -- 格式化
+          "cpplint",      -- 静态检查
+        },
       })
 
       vim.api.nvim_set_keymap(
@@ -23,8 +38,7 @@ return {
     "neovim/nvim-lspconfig",
     config = function()
       local lspconfig = require("lspconfig")
-      local capabilities =
-          require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
+      local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
       -- 共用的 on_attach 函数
       local function on_attach(client, bufnr)
@@ -57,15 +71,41 @@ return {
 
       end
 
-      -- Python pyright
-      lspconfig.pyright.setup({ capabilities = capabilities, on_attach = on_attach })
-
+      -- 增强的 pyright 配置
+      lspconfig.pyright.setup({
+        capabilities = capabilities,
+        on_attach = on_attach,
+        settings = {
+          python = {
+            analysis = {
+              typeCheckingMode = "basic",
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true,
+              diagnosticMode = "workspace",
+            },
+          },
+        },
+      })
 
       -- C++ LSP 配置
       lspconfig.clangd.setup({
         capabilities = capabilities,
-        cmd = { "clangd", "--compile-commands-dir=." },
-        root_dir = lspconfig.util.root_pattern("compile_commands.json", "compile_flags.txt", ".git"),
+        cmd = {
+          "clangd",
+          "--background-index",
+          "--compile-commands-dir=build", -- 关键：指向 Colcon 生成的 build 目录
+          "--clang-tidy",
+          "--completion-style=detailed",
+        },
+        root_dir = function(fname)
+          -- 优先识别 ROS2 工作空间标志
+          return lspconfig.util.root_pattern(
+            "src",
+            "install",
+            "build",
+            "colcon.meta"
+          )(fname) or lspconfig.util.path.dirname(fname)
+        end,
         on_attach = on_attach,
       })
 
@@ -110,16 +150,17 @@ return {
     event = "VeryLazy", -- Or `LspAttach`
     priority = 1000, -- needs to be loaded in first
     config = function()
-      require('tiny-inline-diagnostic').setup()
-      options = {
-        multilines = {
-            -- Enable multiline diagnostic messages
-            enabled = true,
+      require('tiny-inline-diagnostic').setup({
+        options = {
+          multilines = {
+              -- Enable multiline diagnostic messages
+              enabled = true,
 
-            -- Always show messages on all lines for multiline diagnostics
-            always_show = false,
-        },
-      }
+              -- Always show messages on all lines for multiline diagnostics
+              always_show = false,
+          },
+        }
+      })
     end
   },
   {

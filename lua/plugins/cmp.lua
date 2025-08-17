@@ -1,7 +1,7 @@
 return {
   {
     "hrsh7th/nvim-cmp",
-    -- event = 'InsertEnter',
+    event = 'InsertEnter',
     dependencies = {
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-nvim-lsp",
@@ -10,6 +10,7 @@ return {
       "hrsh7th/cmp-cmdline",
       "FelipeLema/cmp-async-path",
       "amarakon/nvim-cmp-buffer-lines",
+      "saadparwaiz1/cmp_luasnip",
     },
     config = function()
       local cmp = require("cmp")
@@ -22,16 +23,22 @@ return {
         experimental = {
           ghost_text = true,
         },
-        sources = {
-          { name = "async_path" },
-          { name = "nvim_lua" },
-          { name = "nvim_lsp" },
-          { name = 'luasnip' },
-          { name = "buffer-lines" },
-          { name = "buffer", get_bufnrs = function() return vim.api.nvim_list_bufs() end },
-          { name = "path" },
-          { name = "nvim_lsp_signature_help" },
+        snippet = {
+          expand = function(args)
+            luasnip.lsp_expand(args.body) -- 添加 snippet 引擎支持
+          end,
         },
+        sources = cmp.config.sources({
+          { name = "nvim_lsp", priority = 1000 },    -- 提高 LSP 优先级
+          { name = "luasnip",  priority = 900 },    -- snippet 优先于其他
+          { name = "async_path", priority = 800 },
+          { name = "nvim_lua", priority = 700 },
+          { name = "buffer-lines", priority = 600 },
+          { name = "nvim_lsp_signature_help" },     -- 保持默认优先级
+        }, {
+          { name = "buffer", keyword_length = 3 },  -- 增加触发长度减少干扰
+          { name = "path" },
+        }),
         mapping = {
           ['<Tab>'] = cmp.mapping(function(fallback)
             if cmp.visible() then cmp.select_next_item()
@@ -45,7 +52,7 @@ return {
           end, { 'i', 's' }),
           ["<CR>"] = cmp.mapping.confirm({
             behavior = cmp.ConfirmBehavior.Replace,
-            select = true,
+            select = false,
           }),
           ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
           ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
@@ -53,7 +60,14 @@ return {
           ["<Up>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
           ["<C-b>"] = cmp.mapping.scroll_docs(-4),
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
-          ["<C-Space>"] = cmp.mapping.complete(),
+          ["<C-Space>"] = cmp.mapping.complete({
+            config = {
+              sources = { -- 空格补全时只启用特定源
+                { name = "nvim_lsp" },
+                { name = "luasnip" },
+              }
+            }
+          }),
           ["<C-e>"] = cmp.mapping.close(),
         },
       })
@@ -77,9 +91,12 @@ return {
   {
     "L3MON4D3/LuaSnip",
     config = function()
-      require("luasnip").config.set_config({ history = true, updateevents = "TextChanged,TextChangedI" })
+      require("luasnip").config.set_config({
+        history = true,
+        updateevents = "TextChanged,TextChangedI",
+        delete_check_events = "TextChanged", -- 添加删除检查
+      })
       require("luasnip.loaders.from_vscode").lazy_load()
     end,
   },
-  { "saadparwaiz1/cmp_luasnip" },
 }
