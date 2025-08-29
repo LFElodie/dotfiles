@@ -33,10 +33,9 @@ return {
           { name = "luasnip",  priority = 900 },    -- snippet 优先于其他
           { name = "async_path", priority = 800 },
           { name = "nvim_lua", priority = 700 },
-          { name = "buffer-lines", priority = 600 },
+          { name = "buffer", priority = 600},  -- 增加触发长度减少干扰
+          { name = "buffer-lines", priority = 500 },
           { name = "nvim_lsp_signature_help" },     -- 保持默认优先级
-        }, {
-          { name = "buffer", keyword_length = 3 },  -- 增加触发长度减少干扰
           { name = "path" },
         }),
         mapping = {
