@@ -11,6 +11,7 @@ return {
       "FelipeLema/cmp-async-path",
       "amarakon/nvim-cmp-buffer-lines",
       "saadparwaiz1/cmp_luasnip",
+      "petertriho/cmp-git"
     },
     config = function()
       local cmp = require("cmp")
@@ -33,11 +34,20 @@ return {
           { name = "luasnip",  priority = 900 },    -- snippet 优先于其他
           { name = "async_path", priority = 800 },
           { name = "nvim_lua", priority = 700 },
-          { name = "buffer", priority = 600},  -- 增加触发长度减少干扰
-          { name = "buffer-lines", priority = 500 },
+          {
+            name = 'buffer',
+            priority = 600,
+            option = {
+              get_bufnrs = function()
+                return vim.api.nvim_list_bufs()
+              end
+            }
+          },
           { name = "nvim_lsp_signature_help" },     -- 保持默认优先级
           { name = "path" },
         }),
+          -- To use git you need to install the plugin petertriho/cmp-git and uncomment lines below
+          -- Set configuration for specific filetype.
         mapping = {
           ['<Tab>'] = cmp.mapping(function(fallback)
             if cmp.visible() then cmp.select_next_item()
@@ -70,7 +80,13 @@ return {
           ["<C-e>"] = cmp.mapping.close(),
         },
       })
-
+      cmp.setup.filetype('gitcommit', {
+          sources = cmp.config.sources({
+            { name = 'git' },
+          }, {
+            { name = 'buffer' },
+          })
+      })
       cmp.setup.cmdline({ "/", "?" }, {
         mapping = cmp.mapping.preset.cmdline(), -- 解决 <Tab> 等键位问题
         sources = {
