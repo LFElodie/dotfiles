@@ -9,7 +9,8 @@ return {
       require("mason").setup()
       require("mason-lspconfig").setup({
         ensure_installed = { "pyright", "clangd", "cmake", "lua_ls", "ruff"},
-        automatic_installation = true,
+        -- 关闭自动启用，确保先注册自定义配置，再按预期启用服务器
+        automatic_enable = false,
       })
       require("mason-tool-installer").setup({
         ensure_installed = {
@@ -32,7 +33,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     config = function()
-      local lspconfig = require("lspconfig")
+      local lspconfig_util = require("lspconfig.util")
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
       -- 共用的 on_attach 函数
@@ -67,7 +68,7 @@ return {
       end
 
       -- 增强的 pyright 配置（专注类型检查）
-      lspconfig.pyright.setup({
+      vim.lsp.config("pyright", {
         capabilities = capabilities,
         on_attach = on_attach,
         settings = {
@@ -90,7 +91,7 @@ return {
       })
 
       -- Ruff (代码风格检查 + 格式化)
-      lspconfig.ruff.setup({
+      vim.lsp.config("ruff", {
         on_attach = function(client, bufnr)
           -- 禁用 Ruff 的类型相关检查（交给 Pyright）
           client.server_capabilities.hoverProvider = false
@@ -117,7 +118,7 @@ return {
       })
 
       -- C++ LSP 配置
-      lspconfig.clangd.setup({
+      vim.lsp.config("clangd", {
         capabilities = capabilities,
         cmd = {
           "clangd",
@@ -126,21 +127,22 @@ return {
           "--clang-tidy",
           "--completion-style=detailed",
         },
-        root_dir = function(fname)
-          -- 优先识别 ROS2 工作空间标志
-          return lspconfig.util.root_pattern(
+        root_dir = function(bufnr, on_dir)
+          local fname = vim.api.nvim_buf_get_name(bufnr)
+          -- 优先识别 ROS2 工作空间标志，找不到时回退到当前文件目录
+          on_dir(lspconfig_util.root_pattern(
             "src",
             "install",
             "build",
             "colcon.meta"
-          )(fname) or vim.fs.dirname(fname)
+          )(fname) or vim.fs.dirname(fname))
         end,
         on_attach = on_attach,
       })
 
-      lspconfig.cmake.setup({ capabilities = capabilities })
+      vim.lsp.config("cmake", { capabilities = capabilities })
 
-      lspconfig.lua_ls.setup({
+      vim.lsp.config("lua_ls", {
         capabilities = capabilities,
         on_attach = on_attach,
         settings = {
@@ -160,6 +162,15 @@ return {
             },
           },
         },
+      })
+
+      -- 显式启用，避免被 mason-lspconfig 在默认配置下抢先启动
+      vim.lsp.enable({
+        "pyright",
+        "ruff",
+        "clangd",
+        "cmake",
+        "lua_ls",
       })
 
     end,

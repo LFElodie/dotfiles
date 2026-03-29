@@ -1,18 +1,18 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
-    event = 'BufRead',
-    build = function()
-      require("nvim-treesitter.install").update({ with_sync = true })()
-    end,
+    lazy = false,
+    build = ":TSUpdate",
     config = function()
-      require("nvim-treesitter.configs").setup({
-        auto_install = true,
-        ensure_installed = {
+      local group = vim.api.nvim_create_augroup("user_treesitter_setup", { clear = true })
+
+      vim.api.nvim_create_autocmd("FileType", {
+        group = group,
+        pattern = {
           "c",
           "cpp",
           "css",
-          "bash",
+          "sh",
           "html",
           "javascript",
           "lua",
@@ -21,23 +21,18 @@ return {
           "json",
           "yaml",
           "markdown",
-          "cmake"
+          "cmake",
         },
-        highlight = { enable = true, use_languagetree = true },
-        refactor = {
-          highlight_definitions = {
-            enable = true,
-            -- Set to false if you have an `updatetime` of ~100.
-            clear_on_cursor_move = true,
-          },
-          -- highlight_current_scope = { enable = true },
-        },
-        indent = { enable = true },
-        indent_on_enter = { enable = true },
+        callback = function(args)
+          -- 新版 nvim-treesitter 由 Neovim 原生接口负责启动高亮
+          pcall(vim.treesitter.start, args.buf)
+
+          -- 缩进仍由 nvim-treesitter 提供，按文件类型启用即可
+          vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end,
       })
     end,
   },
-  { "nvim-treesitter/nvim-treesitter-refactor" },
   {
     "nvim-treesitter/nvim-treesitter-context",
     config = function()
