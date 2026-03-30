@@ -19,6 +19,8 @@ return {
           "build",
           "dotbot",
           "pycache",
+          "lyenv",
+          "zsh"
         },
         mappings = {
           i = {

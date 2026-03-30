@@ -8,17 +8,14 @@ return {
     config = function()
       require("mason").setup()
       require("mason-lspconfig").setup({
-        ensure_installed = { "pyright", "clangd", "cmake", "lua_ls", "ruff"},
+        ensure_installed = { "pyrefly", "clangd", "cmake", "lua_ls", "ruff"},
         -- 关闭自动启用，确保先注册自定义配置，再按预期启用服务器
         automatic_enable = false,
       })
       require("mason-tool-installer").setup({
         ensure_installed = {
           -- Python 工具链
-          "pyright",
-          "black",
           "debugpy",
-          "ruff",
 
           -- C++/ROS2 工具链
           "clangd",
@@ -34,88 +31,60 @@ return {
     "neovim/nvim-lspconfig",
     config = function()
       local lspconfig_util = require("lspconfig.util")
-      local capabilities = require("cmp_nvim_lsp").default_capabilities()
+      local capabilities = require("blink.cmp").get_lsp_capabilities()
+      capabilities.textDocument = {
+        synchronization = {
+          didSave = true,
+          dynamicRegistration = false,
+        },
+        signatureHelp = { dynamicRegistration = false }
+      }
 
       -- 共用的 on_attach 函数
       local function on_attach(client, bufnr)
-        local function buf_set_keymap(...)
-          vim.api.nvim_buf_set_keymap(bufnr, ...)
-        end
-        local opts = { noremap = true, silent = true }
-
         -- 共用的按键设置
-        buf_set_keymap("n", "<leader>k", "<Cmd>lua vim.lsp.buf.hover()<CR>", opts)                    -- 查看文档
-        buf_set_keymap("n", "<C-]>", "<Cmd>lua vim.lsp.buf.definition()<CR>", opts)                   -- 跳转到定义
-        buf_set_keymap("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", opts)                      -- 跳转到定义
-        buf_set_keymap("n", "gr", "<Cmd>lua vim.lsp.buf.references()<CR>", opts)                      -- 查找引用
-        buf_set_keymap("n", "<leader>ca", "<Cmd>lua vim.lsp.buf.code_action()<CR>", opts)             -- 代码操作
-        buf_set_keymap("n", "<leader>rn", "<Cmd>lua vim.lsp.buf.rename()<CR>", opts)                  -- 重命名
-        buf_set_keymap("n", "<leader>e", "<Cmd>lua vim.diagnostic.open_float()<CR>", opts) -- 显示行诊断
-        buf_set_keymap("n", "[d", "<Cmd>lua vim.diagnostic.jump({count=-1, float=true})<CR>", opts)                -- 上一个诊断
-        buf_set_keymap("n", "]d", "<Cmd>lua vim.diagnostic.jump({count=1, float=true})<CR>", opts)                -- 下一个诊断
-
-        if client.server_capabilities.documentHighlightProvider then
-          vim.api.nvim_create_autocmd("CursorHold", {
-            buffer = bufnr,
-            callback = vim.lsp.buf.document_highlight,
-          })
-          vim.api.nvim_create_autocmd({ "CursorMoved", "InsertEnter" }, {
-            buffer = bufnr,
-            callback = vim.lsp.buf.clear_references,
-          })
-        end
-
+        vim.keymap.set("n", "<leader>k", vim.lsp.buf.hover, {buffer = bufnr})                    -- 查看文档
+        vim.keymap.set("n", "<C-]>", vim.lsp.buf.definition, {buffer = bufnr})                   -- 跳转到定义
+        vim.keymap.set("n", "gd", vim.lsp.buf.definition, {buffer = bufnr})                      -- 跳转到定义
+        vim.keymap.set("n", "gr", vim.lsp.buf.references, {buffer = bufnr})                      -- 查找引用
+        vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {buffer = bufnr})             -- 代码操作
+        vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, {buffer = bufnr})                  -- 重命名
+        vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, {buffer = bufnr}) -- 显示行诊断
       end
 
-      -- 增强的 pyright 配置（专注类型检查）
-      vim.lsp.config("pyright", {
+      -- 增强的 pyrefly 配置（专注类型检查）
+      vim.lsp.config("pyrefly", {
         capabilities = capabilities,
         on_attach = on_attach,
-        settings = {
-          pyright = {
-            -- 使用 Ruff 的导入整理功能
-            disableOrganizeImports = true,
-          },
-          python = {
-            analysis = {
-              typeCheckingMode = "basic",
-              autoSearchPaths = true,
-              -- 忽略 Ruff 已经处理的诊断类型
-              diagnosticSeverityOverrides = {
-                reportMissingImports = false,    -- Ruff 的 E402 已经处理
-                reportUndefinedVariable = false, -- Ruff 的 F821 已经处理
-              },
-            },
-          },
-        },
       })
+      vim.lsp.enable("pyrefly")
 
       -- Ruff (代码风格检查 + 格式化)
       vim.lsp.config("ruff", {
         on_attach = function(client, bufnr)
-          -- 禁用 Ruff 的类型相关检查（交给 Pyright）
+          -- 禁用 Ruff 的类型相关检查（交给 pyrefly）
           client.server_capabilities.hoverProvider = false
+          client.server_capabilities.documentFormattingProvider = true
 
           -- 绑定快捷键
-          vim.keymap.set("n", "<leader>f", function()
-            vim.lsp.buf.format({ async = true, filter = function(c) return c.name == "ruff" end })
-          end, { buffer = bufnr, desc = "Format file with Ruff" })
-
+          vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { buffer = bufnr })
           vim.keymap.set("v", "<leader>f", ":'<,'>!ruff format --line-length=140 -<CR>", { desc = "Ruff format selection" })
         end,
         init_options = {
           settings = {
-            -- 启用 Ruff 的代码检查和格式化 (兼容 Black)
-            args = {
-              "--select=E,F,W,B,I,D",  -- 默认检查的规则
-              "--ignore=E203,W503,F841,F401",    -- 忽略与 Black 冲突的规则
-              "--line-length=140",      -- Black 默认行长度
-              "--format=black",        -- 启用 Black 兼容格式化
-              "--unfixable=F841,F401", -- 避免与 Pyright 冲突的修复
+            lineLength = 120,
+            lint = {        -- lint 检查
+              enabled = true,
+              select = { "E", "F", "W", "I", "B", "D" },
+              ignore = {"F841", "E501"}
+            },
+            format = {      -- 格式化／import 排序
+              enable = true,
             },
           },
         },
       })
+      vim.lsp.enable("ruff")
 
       -- C++ LSP 配置
       vim.lsp.config("clangd", {
@@ -139,6 +108,7 @@ return {
         end,
         on_attach = on_attach,
       })
+      vim.lsp.enable("clangd")
 
       vim.lsp.config("cmake", { capabilities = capabilities })
 
@@ -157,16 +127,19 @@ return {
               library = vim.api.nvim_get_runtime_file("", true),
               checkThirdParty = false, -- 不再提示 "Do you want to configure your workspace as a lua project?"
             },
+            hint = { enable = true },   -- 增加 inline suggestions (Neovim 0.10+)
+            completion = { callSnippet = "Replace" },
             telemetry = {
               enable = false,
             },
           },
         },
       })
+      vim.lsp.enable("lua_ls")
 
       -- 显式启用，避免被 mason-lspconfig 在默认配置下抢先启动
       vim.lsp.enable({
-        "pyright",
+        "pyrefly",
         "ruff",
         "clangd",
         "cmake",
