@@ -35,11 +35,13 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+.uuid
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+.cache/
 
 build/
 compile_commands.json
