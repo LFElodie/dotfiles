@@ -19,6 +19,10 @@ vim.o.belloff = "all"
 -- Save undo history
 vim.o.undofile = true
 
+-- Prefer UTF-8, but detect common Chinese encodings when opening legacy files
+vim.o.encoding = "utf-8"
+vim.o.fileencodings = "utf-8,ucs-bom,gb18030,gbk,cp936,latin1"
+
 -- Decrease update time
 vim.o.updatetime = 250
 vim.wo.signcolumn = "yes"
