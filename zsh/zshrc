@@ -61,11 +61,11 @@ export https_proxy="http://127.0.0.1:7890"
 # export ROS_HOSTNAME=localhost
 # export ROS_MASTER_URI=http://localhost:11311
 
-# for ros2 rolling
+# for ros2 jazzy
 source ~/ros2_ws/install/setup.zsh
-source /opt/ros/humble/setup.zsh
-eval "$(register-python-argcomplete3 ros2)"
-eval "$(register-python-argcomplete3 colcon)"
+source /opt/ros/jazzy/setup.zsh
+eval "$(register-python-argcomplete ros2)"
+eval "$(register-python-argcomplete colcon)"
 alias cw='cd ~/ros2_ws'
 alias cs='cd ~/ros2_ws/src'
 alias cm='cd ~/ros2_ws && colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --symlink-install'

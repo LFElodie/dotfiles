@@ -60,7 +60,7 @@ return {
           "dotbot",
           "pycache",
           "dev_venv",
-          "zsh",
+          "^zsh/custom/",
         },
         mappings = {
           i = {
