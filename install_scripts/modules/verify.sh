@@ -28,6 +28,8 @@ verify_environment() {
   verify_command "dev_env ruff" test -x "$HOME/dev_env/bin/ruff"
   verify_command "nvim" nvim --version
   verify_command "tmux" tmux -V
+  verify_command "clangd" clangd --version
+  verify_command "cmake-format" cmake-format --version
   verify_command "node" node --version
   verify_command "npm" npm --version
   verify_command "codex" codex --version
@@ -35,6 +37,7 @@ verify_environment() {
   verify_command "rclone gdrive remote" bash -c 'rclone listremotes | grep -Fxq "gdrive:"'
   verify_command "obsidian-sync link" test -L "$HOME/.local/bin/obsidian-sync"
   verify_command "dotfiles yapf standard" test -f "$DOTFILES_ROOT/ros2/.style.yapf"
+  verify_command "dotfiles clang-format standard" test -f "$DOTFILES_ROOT/ros2/.clang-format"
   verify_command "dotfiles cmake-format standard" test -f "$DOTFILES_ROOT/ros2/cmake-format.yaml"
   verify_command "obsidian sync service enabled" systemctl --user is-enabled obsidian-sync-on-login.service
 }

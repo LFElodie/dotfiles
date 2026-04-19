@@ -151,13 +151,13 @@ install_scripts/
 
 - shell 和终端：`zsh`、`tmux`、`terminator`
 - 编辑器和文件管理：`neovim`、`ranger`
-- 构建和开发：`git`、`curl`、`ca-certificates`、`gnupg`、`lsb-release`、`software-properties-common`、`cmake`、`clang-format`、`ccls`
+- 构建和开发：`git`、`curl`、`ca-certificates`、`gnupg`、`lsb-release`、`software-properties-common`、`cmake`、`cmake-format`、`clangd`、`clang-format`
 - Python：`python3`、`python3-pip`、`python3-venv`、`python3-dev`
 - 搜索和效率工具：`ripgrep`、`fd-find`、`fzf`、`autojump`、`htop`
 - 桌面辅助工具：`xclip`、`gnome-tweaks`
 - Node 和认证工具基础：`nodejs`、`npm`
 - 远程访问和同步：`openssh-server`、`rclone`
-- Neovim/Mason 构建和下载前置：`build-essential`、`unzip`、`wget`
+- Neovim/Mason 构建和下载前置：`build-essential`、`unzip`、`wget`、`fontconfig`
 
 Neovim 可以继续使用 unstable PPA，前提是仍然需要较新的版本。如果 PPA 步骤失败，脚本应明确失败，而不是静默留下旧版编辑器。
 
@@ -195,7 +195,7 @@ bootstrap 脚本应：
 
 - 当 `~/dev_env/bin/python` 不存在时，通过 `python3 -m venv ~/dev_env` 创建虚拟环境。
 - 升级该环境中的 `pip`、`setuptools`、`wheel`。
-- 在该环境中安装 Neovim 和 ROS 工作区常用 Python 工具：`pynvim`、`yapf`、`ruff`、`pyrefly`、`debugpy`、`cmake-language-server`、`cpplint`。
+- 在该环境中安装 Neovim 和 ROS 工作区常用 Python 工具：`pynvim`、`yapf`、`ruff`、`pyrefly`、`debugpy`、`cpplint`。
 - 不默认安装 `black` 和 `pyright`；`black` 的格式化职责由 `yapf` 承担，Python 类型检查使用 `pyrefly`。
 
 Neovim 的 Python 工具解析逻辑应同步改为优先识别：

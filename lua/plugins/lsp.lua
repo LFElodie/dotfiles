@@ -14,7 +14,6 @@ return {
       end
       if has_pip then
         table.insert(ensured_lsp_servers, "pyrefly")
-        table.insert(ensured_lsp_servers, "cmake")
         table.insert(ensured_lsp_servers, "ruff")
       end
 
@@ -31,8 +30,6 @@ return {
           { "yapf", condition = function() return has_pip end },
           { "pyrefly", condition = function() return has_pip end },
           { "ruff", condition = function() return has_pip end },
-          { "cmake", condition = function() return has_pip end },
-
           -- C++/ROS2 工具链
           "clangd",
           "clang-format", -- 格式化
@@ -230,9 +227,6 @@ return {
         on_attach = on_attach,
       })
       enable_if_executable("clangd", "clangd")
-
-      vim.lsp.config("cmake", { capabilities = capabilities })
-      enable_if_executable("cmake", "cmake-language-server")
 
       vim.lsp.config("lua_ls", {
         capabilities = capabilities,

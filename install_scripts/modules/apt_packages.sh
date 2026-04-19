@@ -17,8 +17,9 @@ run_apt_packages() {
     lsb-release
     software-properties-common
     cmake
+    cmake-format
+    clangd
     clang-format
-    ccls
     python3
     python3-pip
     python3-venv
@@ -37,6 +38,7 @@ run_apt_packages() {
     build-essential
     unzip
     wget
+    fontconfig
   )
 
   ensure_sudo

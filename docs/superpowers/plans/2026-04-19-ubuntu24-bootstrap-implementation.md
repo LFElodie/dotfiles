@@ -167,7 +167,7 @@ Implement:
 - apt module with Ubuntu 24.04 package list, including `openssh-server`, `build-essential`, `unzip`, `wget`, `rclone`.
 - Oh My Zsh module with non-interactive install and no forced shell switching.
 - dotbot module that runs `./install`.
-- dev_env module that creates `~/dev_env` and installs `pynvim yapf ruff pyrefly debugpy cmake-language-server cpplint`.
+- dev_env module that creates `~/dev_env` and installs `pynvim yapf ruff pyrefly debugpy cpplint`.
 - node_codex module that installs `n`, stable Node, `@openai/codex`, and optional `@loongphy/codex-auth`.
 - obsidian module that checks `gdrive:` and enables the existing user service when possible.
 - verify module with actionable pass/warn output.

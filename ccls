@@ -1,4 +1,0 @@
-%h -x
-%h c++-header
-%cc -std=c++17
-

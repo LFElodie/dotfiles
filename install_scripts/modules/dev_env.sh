@@ -12,7 +12,6 @@ run_dev_env() {
     ruff
     pyrefly
     debugpy
-    cmake-language-server
     cpplint
   )
 
