@@ -28,6 +28,7 @@
 - Codex CLI 安装和登录提示。
 - rclone 安装和 Obsidian 同步入口设置。
 - 环境验证命令。
+- 精简旧安装入口，避免 `install_scripts` 和根目录 `install_packages.sh` 保留重复职责。
 - 更新 Obsidian 中的开发环境恢复手册，说明新的恢复流程。
 
 本阶段不包含：
@@ -55,6 +56,14 @@ bash install_scripts/bootstrap_ubuntu24.sh
 
 现有 `./install` 继续作为 dotbot 的软链接入口，负责链接配置和轻量设置。bootstrap 脚本负责系统级准备，并在合适阶段调用 `./install`。
 
+本次改造后，用户面向的新系统恢复入口只保留一个：
+
+```bash
+bash install_scripts/bootstrap_ubuntu24.sh
+```
+
+根目录旧入口 `install_packages.sh` 不再保留。`install_scripts` 目录下只保留仍有明确职责的脚本，重复或已被 bootstrap 覆盖的脚本应删除或合并。
+
 ## 脚本结构
 
 `install_scripts/bootstrap_ubuntu24.sh` 应写成可重复执行的 Bash 脚本，并启用严格错误处理。
@@ -71,6 +80,24 @@ bash install_scripts/bootstrap_ubuntu24.sh
 - `verify_environment`：输出已恢复工具的通过/失败状态。
 
 脚本应支持安全重跑。已有目录和已安装工具应尽量复用，避免无意义覆盖。
+
+## 旧脚本精简
+
+当前 dotfiles 中存在多个安装相关入口：
+
+- `install_packages.sh`
+- `install_scripts/setup_packages.sh`
+- `install_scripts/setup_mirrors.sh`
+- `install_scripts/install_font.sh`
+
+本次改造的目标是减少入口数量和重复逻辑：
+
+- 删除根目录 `install_packages.sh`，其职责由 `install_scripts/bootstrap_ubuntu24.sh` 接管。
+- 删除或停用 `install_scripts/setup_packages.sh`，其软件包安装逻辑合并进 bootstrap。
+- 保留 `install_scripts/install_font.sh`，因为它是 dotbot 后置的字体缓存刷新步骤，职责独立。
+- `install_scripts/setup_mirrors.sh` 暂不接入默认流程；如果保留，应在 README 或手册中明确它是可选脚本，不属于一键恢复主路径。
+
+清理后的主路径应清晰：bootstrap 负责系统准备，`./install` 负责 dotbot 链接和轻量配置，其他脚本只保留独立、可解释的职责。
 
 ## 软件包安装
 
@@ -186,7 +213,7 @@ bootstrap 流程应：
 - 安装软件包和切换 shell 时预期会出现 `sudo` 密码提示。
 - 网络问题可能中断 apt、npm 或 rclone 设置。
 - 全局 npm 包安装依赖当前 Node/npm 状态。
-- dotfiles 中已有未提交的 `install_packages.sh` 修改和未跟踪 `.codex` 文件，后续实现时不得意外覆盖或纳入无关提交。
+- dotfiles 中已有未提交的 `install_packages.sh` 修改和未跟踪 `.codex` 文件。由于 `install_packages.sh` 将在本次改造中删除，实施前需要确认其唯一新增内容 `openssh-server` 已合并进 bootstrap；`.codex` 仍不得意外纳入无关提交。
 
 ## 验收标准
 
@@ -195,4 +222,6 @@ bootstrap 流程应：
 - ROS 2 尚未安装时，zsh 仍能干净启动。
 - Codex CLI 已安装，并向用户输出明确的登录说明。
 - rclone 和 Obsidian 同步链接已安装；缺少 Google Drive 授权时，向用户输出明确配置说明。
+- `install_packages.sh` 已删除，`install_scripts/setup_packages.sh` 的重复职责已被合并或移除。
+- `install_scripts` 目录只保留 bootstrap 和职责清晰的辅助脚本。
 - 开发环境恢复手册与实际实现流程一致。
