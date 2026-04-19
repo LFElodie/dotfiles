@@ -27,6 +27,9 @@
     ~/.local/bin/obsidian-sync: obsidian/bin/obsidian-sync
     ~/.local/bin/obsidian-sync-init: obsidian/bin/obsidian-sync-init
     ~/.config/rclone/obsidian-bisync-filter.txt: obsidian/rclone/obsidian-bisync-filter.txt
+    ~/.local/bin/ros2-ws-sync: ros2/bin/ros2-ws-sync
+    ~/.local/bin/ros2-ws-sync-init: ros2/bin/ros2-ws-sync-init
+    ~/.config/rclone/ros2-ws-bisync-filter.txt: ros2/rclone/ros2-ws-bisync-filter.txt
     ~/.config/systemd/user/obsidian-sync-on-login.service: obsidian/systemd/user/obsidian-sync-on-login.service
 
 - shell:

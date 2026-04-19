@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+LOCAL_WS="/home/fei/ros2_ws"
+REMOTE_WS="gdrive:sync_space/ros2_ws"
+FILTERS="/home/fei/.config/rclone/ros2-ws-bisync-filter.txt"
+WORKDIR="/home/fei/.cache/rclone/bisync-ros2-ws"
+LOCKDIR="/tmp/ros2-ws-sync.lock"
+
+if ! mkdir "${LOCKDIR}" 2>/dev/null; then
+  echo "已有 ros2_ws 同步任务在运行，退出。"
+  exit 1
+fi
+trap 'rmdir "${LOCKDIR}"' EXIT
+
+if [[ ! -d "${LOCAL_WS}" ]]; then
+  echo "本地 ros2_ws 不存在：${LOCAL_WS}"
+  exit 1
+fi
+
+if [[ ! -f "${FILTERS}" ]]; then
+  echo "过滤规则不存在：${FILTERS}"
+  exit 1
+fi
+
+mkdir -p "${WORKDIR}"
+
+rclone bisync "${LOCAL_WS}" "${REMOTE_WS}" \
+  --resync \
+  --workdir "${WORKDIR}" \
+  --filters-file "${FILTERS}" \
+  --verbose

@@ -75,6 +75,20 @@ assert_contains install_scripts/modules/node_codex.sh "@openai/codex"
 assert_contains install_scripts/modules/obsidian_sync.sh "rclone"
 assert_executable obsidian/bin/obsidian-sync
 assert_executable obsidian/bin/obsidian-sync-init
+assert_executable ros2/bin/ros2-ws-sync
+assert_executable ros2/bin/ros2-ws-sync-init
+assert_file ros2/rclone/ros2-ws-bisync-filter.txt
+assert_contains ros2/bin/ros2-ws-sync "gdrive:sync_space/ros2_ws"
+assert_contains ros2/bin/ros2-ws-sync-init "--resync"
+assert_not_contains ros2/bin/ros2-ws-sync "--create-empty-src-dirs"
+assert_not_contains ros2/bin/ros2-ws-sync-init "--create-empty-src-dirs"
+assert_contains ros2/rclone/ros2-ws-bisync-filter.txt "- build/**"
+assert_contains ros2/rclone/ros2-ws-bisync-filter.txt "- install/**"
+assert_contains ros2/rclone/ros2-ws-bisync-filter.txt "- log/**"
+assert_contains install.conf.yaml "~/.local/bin/ros2-ws-sync: ros2/bin/ros2-ws-sync"
+assert_contains install.conf.yaml "~/.local/bin/ros2-ws-sync-init: ros2/bin/ros2-ws-sync-init"
+assert_contains install.conf.yaml "~/.config/rclone/ros2-ws-bisync-filter.txt: ros2/rclone/ros2-ws-bisync-filter.txt"
+assert_not_contains install.conf.yaml "ros2-ws-sync-on-login"
 [[ ! -e "$ROOT/ccls" ]] || fail "legacy ccls file should be removed"
 [[ ! -e "$ROOT/clang-format" ]] || fail "legacy root clang-format file should be removed"
 [[ ! -e "$ROOT/.vimspector.json" ]] || fail "legacy vimspector config should be removed"
