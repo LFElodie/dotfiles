@@ -19,9 +19,13 @@ not_contains() {
 }
 
 [[ -f "$ROOT/ros2/.style.yapf" ]] || fail "missing ros2/.style.yapf"
+[[ -f "$ROOT/ros2/.clang-format" ]] || fail "missing ros2/.clang-format"
 [[ -f "$ROOT/ros2/cmake-format.yaml" ]] || fail "missing ros2/cmake-format.yaml"
 contains ros2/.style.yapf "based_on_style = google"
 contains ros2/.style.yapf "column_limit = 120"
+contains ros2/.clang-format "BasedOnStyle: Google"
+contains ros2/.clang-format "ColumnLimit: 120"
+contains ros2/.clang-format "IndentWidth: 2"
 contains ros2/cmake-format.yaml "tab_size: 2"
 contains lua/plugins/lsp.lua "dev_env"
 contains lua/plugins/lsp.lua "yapf"

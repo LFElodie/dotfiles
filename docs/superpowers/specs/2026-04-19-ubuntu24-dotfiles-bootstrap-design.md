@@ -209,6 +209,7 @@ Neovim 的 Python 工具解析逻辑应同步改为优先识别：
 将 ROS 工作区的格式化标准文件纳入 dotfiles 管理：
 
 - `ros2/.style.yapf`：来源为当前 `/home/fei/ros2_ws/.style.yapf`，作为 Python yapf 格式化标准。
+- `ros2/.clang-format`：来源为当前 `/home/fei/ros2_ws/.clang-format`，作为 C/C++ clang-format 格式化标准。
 - `ros2/cmake-format.yaml`：来源为当前 `/home/fei/ros2_ws/cmake-format.yaml`，作为 CMake 格式化标准。
 
 本阶段只负责把标准文件放入 dotfiles，不在 bootstrap 或 dotbot 中链接到 `~/ros2_ws`。原因是新系统恢复基础环境时，ROS 2 和 ROS 工作区可能尚未安装或恢复。
@@ -216,6 +217,7 @@ Neovim 的 Python 工具解析逻辑应同步改为优先识别：
 后续恢复 ROS 工作区时，再由单独步骤将这些标准文件复制或链接到：
 
 - `~/ros2_ws/.style.yapf`
+- `~/ros2_ws/.clang-format`
 - `~/ros2_ws/cmake-format.yaml`
 
 ROS 2 安装、工作区源码恢复，以及格式化标准文件落地到 `~/ros2_ws` 的动作，均不属于本阶段 bootstrap 主路径。
@@ -280,6 +282,7 @@ bootstrap 流程应：
 - `rclone listremotes` 中包含 `gdrive:`
 - `test -L ~/.local/bin/obsidian-sync`
 - `test -f ~/dotfiles/ros2/.style.yapf`
+- `test -f ~/dotfiles/ros2/.clang-format`
 - `test -f ~/dotfiles/ros2/cmake-format.yaml`
 - `systemctl --user is-enabled obsidian-sync-on-login.service`
 
@@ -316,7 +319,7 @@ bootstrap 流程应：
 - 脚本可重复执行，不破坏已有配置。
 - ROS 2 尚未安装时，zsh 仍能干净启动。
 - `~/dev_env` 已创建，且包含 `yapf`、`ruff`、`pyrefly` 等 Neovim/ROS Python 开发工具。
-- `ros2/.style.yapf` 和 `ros2/cmake-format.yaml` 的标准内容由 dotfiles 管理，但 bootstrap 不要求 `~/ros2_ws` 存在。
+- `ros2/.style.yapf`、`ros2/.clang-format` 和 `ros2/cmake-format.yaml` 的标准内容由 dotfiles 管理，但 bootstrap 不要求 `~/ros2_ws` 存在。
 - Neovim 在 ROS 工作区 Python 文件中默认使用 yapf 格式化，lint/type check 使用 `ruff + pyrefly`。
 - Codex CLI 已安装，并向用户输出明确的登录说明。
 - rclone 和 Obsidian 同步链接已安装；缺少 Google Drive 授权时，向用户输出明确配置说明。
