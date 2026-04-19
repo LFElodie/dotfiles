@@ -1,0 +1,12 @@
+[Unit]
+Description=Sync Obsidian Vault with Google Drive after user login
+After=default.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/bin/sleep 45
+ExecStart=/home/fei/.local/bin/obsidian-sync
+TimeoutStartSec=5min
+
+[Install]
+WantedBy=default.target

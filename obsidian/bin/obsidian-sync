@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+LOCAL_VAULT="/home/fei/Documents/Obsidian Vault"
+REMOTE_VAULT="gdrive:Obsidian Vault"
+FILTERS="/home/fei/.config/rclone/obsidian-bisync-filter.txt"
+WORKDIR="/home/fei/.cache/rclone/bisync-obsidian-vault"
+LOCKDIR="/tmp/obsidian-sync.lock"
+
+if ! mkdir "${LOCKDIR}" 2>/dev/null; then
+  echo "已有 Obsidian 同步任务在运行，退出。"
+  exit 1
+fi
+trap 'rmdir "${LOCKDIR}"' EXIT
+
+if [[ ! -d "${LOCAL_VAULT}" ]]; then
+  echo "本地 Vault 不存在：${LOCAL_VAULT}"
+  exit 1
+fi
+
+mkdir -p "${WORKDIR}"
+
+rclone bisync "${LOCAL_VAULT}" "${REMOTE_VAULT}" \
+  --workdir "${WORKDIR}" \
+  --filters-file "${FILTERS}" \
+  --verbose

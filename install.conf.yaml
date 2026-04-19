@@ -24,9 +24,14 @@
     ~/.local/share/fonts:
       glob: true
       path: font
+    ~/.local/bin/obsidian-sync: obsidian/bin/obsidian-sync
+    ~/.local/bin/obsidian-sync-init: obsidian/bin/obsidian-sync-init
+    ~/.config/rclone/obsidian-bisync-filter.txt: obsidian/rclone/obsidian-bisync-filter.txt
+    ~/.config/systemd/user/obsidian-sync-on-login.service: obsidian/systemd/user/obsidian-sync-on-login.service
 
 - shell:
   - [bash set_git.sh, Setting git]
   - [bash install_scripts/install_font.sh, Install nerd font]
+  - [bash obsidian/setup_obsidian_sync.sh, Setup Obsidian sync service]
   # - [bash install_scripts/setup_mirrors.sh, Setup apt/pip mirrors]
   # - [bash install_scripts/setup_packages.sh, Install packages and Neovim/nightly/node]
