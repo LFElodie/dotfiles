@@ -23,6 +23,30 @@ if [[ ! -f "${FILTERS}" ]]; then
   exit 1
 fi
 
+cat <<EOF
+即将重建 ros2_ws 的 rclone bisync 状态。
+
+这不是日常同步命令；日常同步请使用 ros2-ws-sync。
+
+Path1 本地：${LOCAL_WS}
+Path2 云端：${REMOTE_WS}
+
+警告：本命令会执行 rclone bisync --resync。
+Path1 本地文件可能覆盖 Path2 云端版本。
+只有在你已经确认本地 ros2_ws 是可信基线，或已手动合并本地和云端差异后，才继续。
+EOF
+
+printf '请输入 y 继续，其他输入取消：'
+if ! read -r confirm; then
+  echo "已取消 ros2_ws 同步状态重建。"
+  exit 1
+fi
+
+if [[ ! "${confirm}" == "y" ]]; then
+  echo "已取消 ros2_ws 同步状态重建。"
+  exit 1
+fi
+
 mkdir -p "${WORKDIR}"
 
 rclone bisync "${LOCAL_WS}" "${REMOTE_WS}" \
