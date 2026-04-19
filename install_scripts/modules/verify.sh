@@ -36,6 +36,8 @@ verify_environment() {
   verify_command "rclone" rclone version
   verify_command "rclone gdrive remote" bash -c 'rclone listremotes | grep -Fxq "gdrive:"'
   verify_command "obsidian-sync link" test -L "$HOME/.local/bin/obsidian-sync"
+  verify_command "obsidian-sync executable" test -x "$HOME/.local/bin/obsidian-sync"
+  verify_command "obsidian vault directory" test -d "$HOME/Documents/Obsidian Vault"
   verify_command "dotfiles yapf standard" test -f "$DOTFILES_ROOT/ros2/.style.yapf"
   verify_command "dotfiles clang-format standard" test -f "$DOTFILES_ROOT/ros2/.clang-format"
   verify_command "dotfiles cmake-format standard" test -f "$DOTFILES_ROOT/ros2/cmake-format.yaml"

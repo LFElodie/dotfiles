@@ -73,6 +73,8 @@ assert_contains install_scripts/modules/dev_env.sh "ruff"
 assert_not_contains install_scripts/modules/dev_env.sh "cmake-language-server"
 assert_contains install_scripts/modules/node_codex.sh "@openai/codex"
 assert_contains install_scripts/modules/obsidian_sync.sh "rclone"
+assert_executable obsidian/bin/obsidian-sync
+assert_executable obsidian/bin/obsidian-sync-init
 [[ ! -e "$ROOT/ccls" ]] || fail "legacy ccls file should be removed"
 [[ ! -e "$ROOT/clang-format" ]] || fail "legacy root clang-format file should be removed"
 [[ ! -e "$ROOT/.vimspector.json" ]] || fail "legacy vimspector config should be removed"
@@ -86,6 +88,8 @@ assert_contains install_scripts/modules/verify.sh "verify_environment"
 assert_contains install_scripts/modules/verify.sh "clangd"
 assert_contains install_scripts/modules/verify.sh "cmake-format"
 assert_contains install_scripts/modules/verify.sh "dotfiles clang-format standard"
+assert_contains install_scripts/modules/verify.sh "obsidian-sync executable"
+assert_contains install_scripts/modules/verify.sh "obsidian vault directory"
 
 bash -n "$ROOT/install_scripts/bootstrap_ubuntu24.sh"
 for module in "${modules[@]}"; do
