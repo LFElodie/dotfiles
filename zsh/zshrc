@@ -62,12 +62,23 @@ unsetopt nomatch
 # export ROS_MASTER_URI=http://localhost:11311
 
 # for ros2 jazzy
-source /opt/ros/jazzy/setup.zsh
-source ~/ros2_ws/install/setup.zsh
+if [[ -f /opt/ros/jazzy/setup.zsh ]]; then
+    source /opt/ros/jazzy/setup.zsh
+fi
+
+if [[ -f "$HOME/ros2_ws/install/setup.zsh" ]]; then
+    source "$HOME/ros2_ws/install/setup.zsh"
+fi
+
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/dev_env/bin:$PATH"
-eval "$(register-python-argcomplete ros2)"
-eval "$(register-python-argcomplete colcon)"
+if command -v register-python-argcomplete >/dev/null 2>&1 && command -v ros2 >/dev/null 2>&1; then
+    eval "$(register-python-argcomplete ros2)"
+fi
+
+if command -v register-python-argcomplete >/dev/null 2>&1 && command -v colcon >/dev/null 2>&1; then
+    eval "$(register-python-argcomplete colcon)"
+fi
 alias cw='cd ~/ros2_ws'
 alias cs='cd ~/ros2_ws/src'
 alias cm='cd ~/ros2_ws && colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --symlink-install'
