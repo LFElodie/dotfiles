@@ -66,11 +66,46 @@ bash install_scripts/bootstrap_ubuntu24.sh
 
 根目录旧入口 `install_packages.sh` 不再保留。`install_scripts` 目录下只保留仍有明确职责的脚本，重复或已被 bootstrap 覆盖的脚本应删除或合并。
 
+bootstrap 是用户入口，但不应成为大而全的实现文件。它只负责顺序编排和统一错误处理，具体能力放到可替换的模块脚本中。
+
 ## 脚本结构
 
-`install_scripts/bootstrap_ubuntu24.sh` 应写成可重复执行的 Bash 脚本，并启用严格错误处理。
+`install_scripts/bootstrap_ubuntu24.sh` 应写成可重复执行的 Bash 编排脚本，并启用严格错误处理。
 
-建议结构：
+推荐目录结构：
+
+```text
+install_scripts/
+  bootstrap_ubuntu24.sh
+  lib/
+    common.sh
+  modules/
+    preflight_ubuntu24.sh
+    apt_packages.sh
+    oh_my_zsh.sh
+    dotbot.sh
+    dev_env.sh
+    node_codex.sh
+    obsidian_sync.sh
+    verify.sh
+```
+
+职责划分：
+
+- `bootstrap_ubuntu24.sh`：只负责加载公共函数、按顺序调用模块、汇总结果，不直接写具体安装细节。
+- `lib/common.sh`：放日志、错误处理、命令检查、幂等辅助函数。
+- `modules/preflight_ubuntu24.sh`：检查系统版本、sudo、网络、GitHub SSH。
+- `modules/apt_packages.sh`：安装基础 apt 软件包。
+- `modules/oh_my_zsh.sh`：安装或检查 Oh My Zsh。
+- `modules/dotbot.sh`：执行 `./install`。
+- `modules/dev_env.sh`：创建 `~/dev_env` 并安装 Python 开发工具。
+- `modules/node_codex.sh`：安装 Node 稳定版、Codex CLI，并提示登录。
+- `modules/obsidian_sync.sh`：安装后的 Obsidian/rclone 检查和服务启用。该模块是当前同步方案的实现，不应被其他模块强依赖。
+- `modules/verify.sh`：集中调用各模块的验证函数并输出结果。
+
+每个模块应暴露统一入口，例如 `run_<module>` 和 `verify_<module>`。模块之间通过命令、文件路径和环境变量通信，不直接调用彼此的内部函数。这样以后如果不再使用 Obsidian，只需要替换或移除 `modules/obsidian_sync.sh`，不需要重写 bootstrap 主流程。
+
+当前建议模块：
 
 - `require_command`：在模块执行前检查必要命令是否存在。
 - `is_ubuntu_24_04`：确认系统是否为 Ubuntu 24.04；不匹配时给出警告或退出。
@@ -83,6 +118,14 @@ bash install_scripts/bootstrap_ubuntu24.sh
 - `verify_environment`：输出已恢复工具的通过/失败状态。
 
 脚本应支持安全重跑。已有目录和已安装工具应尽量复用，避免无意义覆盖。
+
+模块边界约束：
+
+- 主脚本不得直接写 Obsidian、Codex、Neovim、rclone 等具体工具细节。
+- 模块可以被单独运行，便于调试和未来重排恢复步骤。
+- 可选模块失败时，应明确说明失败影响；不应让无关模块误报。
+- 凭据相关模块只能提示交互认证，不保存密钥或 token。
+- 新增工具时优先新增模块或扩展对应模块，不把逻辑揉进 bootstrap 主脚本。
 
 ## 旧脚本精简
 
@@ -100,7 +143,7 @@ bash install_scripts/bootstrap_ubuntu24.sh
 - 保留 `install_scripts/install_font.sh`，因为它是 dotbot 后置的字体缓存刷新步骤，职责独立。
 - `install_scripts/setup_mirrors.sh` 暂不接入默认流程；如果保留，应在 README 或手册中明确它是可选脚本，不属于一键恢复主路径。
 
-清理后的主路径应清晰：bootstrap 负责系统准备，`./install` 负责 dotbot 链接和轻量配置，其他脚本只保留独立、可解释的职责。
+清理后的主路径应清晰：bootstrap 负责编排，模块负责具体安装和验证，`./install` 负责 dotbot 链接和轻量配置，其他脚本只保留独立、可解释的职责。
 
 ## 软件包安装
 
@@ -264,6 +307,7 @@ bootstrap 流程应：
 - 网络问题可能中断 apt、npm 或 rclone 设置。
 - 全局 npm 包安装依赖当前 Node/npm 状态。
 - `~/ros2_ws` 可能尚未恢复源码；本阶段只负责把格式化标准文件纳入 dotfiles，不负责链接到 ROS 工作区，也不负责 ROS 2 或工作区源码安装。
+- 如果模块边界设计不清，bootstrap 可能重新退化成大而全脚本；实施时需要保持主脚本只编排、模块承载具体逻辑。
 - dotfiles 中已有未提交的 `install_packages.sh` 修改和未跟踪 `.codex` 文件。由于 `install_packages.sh` 将在本次改造中删除，实施前需要确认其唯一新增内容 `openssh-server` 已合并进 bootstrap；`.codex` 仍不得意外纳入无关提交。
 
 ## 验收标准
@@ -277,5 +321,6 @@ bootstrap 流程应：
 - Codex CLI 已安装，并向用户输出明确的登录说明。
 - rclone 和 Obsidian 同步链接已安装；缺少 Google Drive 授权时，向用户输出明确配置说明。
 - `install_packages.sh` 已删除，`install_scripts/setup_packages.sh` 的重复职责已被合并或移除。
-- `install_scripts` 目录只保留 bootstrap 和职责清晰的辅助脚本。
+- `install_scripts` 目录只保留 bootstrap、公共库、可编排模块和职责清晰的辅助脚本。
+- bootstrap 主脚本只负责编排；Obsidian/Codex/dev_env/apt 等具体逻辑位于独立模块中。
 - 开发环境恢复手册与实际实现流程一致。
