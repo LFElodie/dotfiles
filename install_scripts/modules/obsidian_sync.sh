@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$MODULE_DIR/../lib/common.sh"
+
 run_obsidian_sync() {
   require_command rclone
 
@@ -16,3 +19,7 @@ run_obsidian_sync() {
     log_warn "systemctl not found; skip Obsidian user service setup"
   fi
 }
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  run_obsidian_sync "$@"
+fi

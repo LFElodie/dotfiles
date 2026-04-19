@@ -57,6 +57,7 @@ assert_not_contains install_scripts/bootstrap_ubuntu24.sh "npm install -g"
 for module in "${modules[@]}"; do
   assert_file "install_scripts/modules/${module}.sh"
   assert_contains "install_scripts/modules/${module}.sh" "run_${module}"
+  assert_contains "install_scripts/modules/${module}.sh" "common.sh"
 done
 
 assert_contains install_scripts/modules/apt_packages.sh "openssh-server"

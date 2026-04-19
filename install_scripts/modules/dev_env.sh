@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$MODULE_DIR/../lib/common.sh"
+
 DEV_ENV_DIR="${DEV_ENV_DIR:-$HOME/dev_env}"
 
 run_dev_env() {
@@ -24,3 +27,7 @@ run_dev_env() {
 
   log_info "Python development environment ready: $DEV_ENV_DIR"
 }
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  run_dev_env "$@"
+fi

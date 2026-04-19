@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [[ -n "${DOTFILES_COMMON_SH_LOADED:-}" ]]; then
-  return 0
+  return 0 2>/dev/null || exit 0
 fi
 DOTFILES_COMMON_SH_LOADED=1
 

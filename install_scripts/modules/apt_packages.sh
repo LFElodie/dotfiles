@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$MODULE_DIR/../lib/common.sh"
+
 run_apt_packages() {
   local packages=(
     zsh
@@ -41,3 +44,7 @@ run_apt_packages() {
   sudo apt-get update
   sudo apt-get install -y "${packages[@]}"
 }
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  run_apt_packages "$@"
+fi

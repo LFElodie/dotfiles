@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$MODULE_DIR/../lib/common.sh"
+
 run_verify() {
   verify_environment
 }
@@ -35,3 +38,7 @@ verify_environment() {
   verify_command "dotfiles cmake-format standard" test -f "$DOTFILES_ROOT/ros2/cmake-format.yaml"
   verify_command "obsidian sync service enabled" systemctl --user is-enabled obsidian-sync-on-login.service
 }
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  run_verify "$@"
+fi

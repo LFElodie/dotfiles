@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$MODULE_DIR/../lib/common.sh"
+
 run_preflight_ubuntu24() {
   require_command bash
   require_command git
@@ -39,3 +42,7 @@ run_preflight_ubuntu24() {
     fi
   fi
 }
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  run_preflight_ubuntu24 "$@"
+fi

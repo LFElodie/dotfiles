@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$MODULE_DIR/../lib/common.sh"
+
 run_oh_my_zsh() {
   if [[ -d "$HOME/.oh-my-zsh" ]]; then
     log_info "Oh My Zsh already exists: $HOME/.oh-my-zsh"
@@ -14,3 +17,7 @@ run_oh_my_zsh() {
 
   log_info "Oh My Zsh installed. Change login shell manually if needed: chsh -s \"$(command -v zsh)\""
 }
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  run_oh_my_zsh "$@"
+fi
