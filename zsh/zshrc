@@ -62,8 +62,8 @@ unsetopt nomatch
 # export ROS_MASTER_URI=http://localhost:11311
 
 # for ros2 jazzy
-source ~/ros2_ws/install/setup.zsh
 source /opt/ros/jazzy/setup.zsh
+source ~/ros2_ws/install/setup.zsh
 eval "$(register-python-argcomplete ros2)"
 eval "$(register-python-argcomplete colcon)"
 alias cw='cd ~/ros2_ws'
