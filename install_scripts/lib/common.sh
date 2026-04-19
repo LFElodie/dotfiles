@@ -7,6 +7,10 @@ DOTFILES_COMMON_SH_LOADED=1
 
 DOTFILES_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
+command_exists() {
+  command -v "$1" >/dev/null 2>&1
+}
+
 log_info() {
   printf '[INFO] %s\n' "$*"
 }
@@ -21,10 +25,18 @@ log_error() {
 
 require_command() {
   local cmd="$1"
-  command -v "$cmd" >/dev/null 2>&1 || {
+  command_exists "$cmd" || {
     log_error "missing required command: $cmd"
     return 1
   }
+}
+
+ensure_sudo() {
+  if [[ "${EUID:-$(id -u)}" -eq 0 ]]; then
+    return 0
+  fi
+  require_command sudo
+  sudo -v
 }
 
 run_step() {
@@ -34,3 +46,10 @@ run_step() {
   "$@"
 }
 
+append_unique_path() {
+  local dir="$1"
+  case ":$PATH:" in
+    *":$dir:"*) ;;
+    *) export PATH="$dir:$PATH" ;;
+  esac
+}

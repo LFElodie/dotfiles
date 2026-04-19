@@ -67,6 +67,13 @@ assert_contains install_scripts/modules/dev_env.sh "pyrefly"
 assert_contains install_scripts/modules/dev_env.sh "ruff"
 assert_contains install_scripts/modules/node_codex.sh "@openai/codex"
 assert_contains install_scripts/modules/obsidian_sync.sh "rclone"
+[[ ! -e "$ROOT/install_packages.sh" ]] || fail "install_packages.sh should be removed"
+[[ ! -e "$ROOT/install_scripts/setup_packages.sh" ]] || fail "setup_packages.sh should be removed"
+assert_not_contains install.conf.yaml "setup_packages.sh"
+assert_contains install_scripts/modules/apt_packages.sh "neovim-ppa/unstable"
+assert_contains install_scripts/modules/dev_env.sh "python3 -m venv"
+assert_contains install_scripts/modules/oh_my_zsh.sh "CHSH=no"
+assert_contains install_scripts/modules/verify.sh "verify_environment"
 
 bash -n "$ROOT/install_scripts/bootstrap_ubuntu24.sh"
 for module in "${modules[@]}"; do

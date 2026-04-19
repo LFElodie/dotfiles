@@ -34,4 +34,3 @@
   - [bash install_scripts/install_font.sh, Install nerd font]
   - [bash obsidian/setup_obsidian_sync.sh, Setup Obsidian sync service]
   # - [bash install_scripts/setup_mirrors.sh, Setup apt/pip mirrors]
-  # - [bash install_scripts/setup_packages.sh, Install packages and Neovim/nightly/node]
