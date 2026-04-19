@@ -1,50 +1,50 @@
-# Ubuntu 24.04 dotfiles Bootstrap Design
+# Ubuntu 24.04 dotfiles 恢复自动化设计
 
-## Goal
+## 目标
 
-After a fresh Ubuntu 24.04 installation, the environment should be restored with the fewest manual steps possible.
+在全新安装 Ubuntu 24.04 后，尽量用最少的手动步骤恢复常用开发环境。
 
-Manual work is limited to credentials and external account authorization:
+手动步骤只保留凭据和外部账号授权相关内容：
 
-- Create or import an SSH key.
-- Add the SSH public key to GitHub.
-- Clone the dotfiles repository.
-- Complete interactive login for Codex.
-- Complete interactive Google Drive authorization for rclone.
+- 创建或导入 SSH key。
+- 将 SSH 公钥添加到 GitHub。
+- 克隆 dotfiles 仓库。
+- 交互完成 Codex 登录。
+- 交互完成 rclone 的 Google Drive 授权。
 
-Everything else should be handled by dotfiles scripts where practical.
+除此之外，能由 dotfiles 脚本自动完成的内容都应尽量自动化。
 
-ROS 2 installation is intentionally out of scope for this phase. The shell configuration should still tolerate ROS 2 not being installed yet.
+本阶段不包含 ROS 2 安装。shell 配置需要兼容 ROS 2 尚未安装的状态，避免新系统打开终端时报错。
 
-## Scope
+## 范围
 
-This phase covers:
+本阶段包含：
 
-- Ubuntu 24.04 common package installation.
-- zsh and Oh My Zsh setup.
-- dotbot-managed symlinks.
-- Neovim, tmux, ranger, git, fonts, and shell configuration.
-- Node/npm setup.
-- Codex CLI installation and login prompt.
-- rclone installation and Obsidian sync setup.
-- Environment verification commands.
-- Updating the Obsidian recovery manual to describe the new flow.
+- Ubuntu 24.04 常用软件包安装。
+- zsh 和 Oh My Zsh 设置。
+- dotbot 管理的软链接恢复。
+- Neovim、tmux、ranger、git、字体和 shell 配置恢复。
+- Node/npm 设置。
+- Codex CLI 安装和登录提示。
+- rclone 安装和 Obsidian 同步入口设置。
+- 环境验证命令。
+- 更新 Obsidian 中的开发环境恢复手册，说明新的恢复流程。
 
-This phase does not cover:
+本阶段不包含：
 
-- ROS 2 Jazzy installation.
-- Backing up or restoring SSH private keys, tokens, rclone secrets, Codex session files, or any other credentials.
-- Migrating away from dotbot.
+- ROS 2 Jazzy 安装。
+- 备份或恢复 SSH 私钥、token、rclone 密钥、Codex 会话文件或任何其他凭据。
+- 从 dotbot 迁移到其他 dotfiles 管理工具。
 
-## Entry Point
+## 入口
 
-Add a top-level Ubuntu bootstrap script:
+新增一个 Ubuntu 24.04 专用 bootstrap 脚本：
 
 ```bash
 bash install_scripts/bootstrap_ubuntu24.sh
 ```
 
-The fresh-system flow becomes:
+新系统恢复流程变成：
 
 ```bash
 cd ~
@@ -53,77 +53,81 @@ cd ~/dotfiles
 bash install_scripts/bootstrap_ubuntu24.sh
 ```
 
-The existing `./install` remains the dotbot entry point for symlinks and lightweight setup. The bootstrap script orchestrates system preparation and then calls `./install`.
+现有 `./install` 继续作为 dotbot 的软链接入口，负责链接配置和轻量设置。bootstrap 脚本负责系统级准备，并在合适阶段调用 `./install`。
 
-## Script Structure
+## 脚本结构
 
-`install_scripts/bootstrap_ubuntu24.sh` should be written as an idempotent Bash script with strict error handling.
+`install_scripts/bootstrap_ubuntu24.sh` 应写成可重复执行的 Bash 脚本，并启用严格错误处理。
 
-Recommended structure:
+建议结构：
 
-- `require_command`: checks required commands before a module runs.
-- `is_ubuntu_24_04`: warns or exits if the system is not Ubuntu 24.04.
-- `run_apt_packages`: installs common apt packages.
-- `setup_oh_my_zsh`: installs Oh My Zsh only if `~/.oh-my-zsh` is missing.
-- `run_dotbot_install`: runs `./install` from the repository root.
-- `setup_node_codex`: installs Node stable tooling and Codex CLI.
-- `setup_obsidian_sync`: checks rclone remote state and enables existing sync service.
-- `verify_environment`: prints pass/fail status for the restored tools.
+- `require_command`：在模块执行前检查必要命令是否存在。
+- `is_ubuntu_24_04`：确认系统是否为 Ubuntu 24.04；不匹配时给出警告或退出。
+- `run_apt_packages`：安装常用 apt 软件包。
+- `setup_oh_my_zsh`：仅当 `~/.oh-my-zsh` 不存在时安装 Oh My Zsh。
+- `run_dotbot_install`：从仓库根目录执行 `./install`。
+- `setup_node_codex`：安装 Node 稳定版工具链和 Codex CLI。
+- `setup_obsidian_sync`：检查 rclone 远端状态，并启用现有 Obsidian 同步服务。
+- `verify_environment`：输出已恢复工具的通过/失败状态。
 
-The script should be safe to rerun. Existing directories and installed tools should be reused where possible.
+脚本应支持安全重跑。已有目录和已安装工具应尽量复用，避免无意义覆盖。
 
-## Package Installation
+## 软件包安装
 
-The package module should install the currently expected baseline:
+软件包模块安装当前预期的基础环境：
 
-- Shell and terminal: `zsh`, `tmux`, `terminator`
-- Editor and file management: `neovim`, `ranger`
-- Build and development: `git`, `curl`, `ca-certificates`, `gnupg`, `lsb-release`, `software-properties-common`, `cmake`, `clang-format`, `ccls`
-- Python: `python3`, `python3-pip`, `python3-venv`, `python3-dev`
-- Search and productivity: `ripgrep`, `fd-find`, `fzf`, `autojump`, `htop`
-- Desktop helpers: `xclip`, `gnome-tweaks`
-- Node and auth tooling base: `nodejs`, `npm`
-- Remote access and sync: `openssh-server`, `rclone`
+- shell 和终端：`zsh`、`tmux`、`terminator`
+- 编辑器和文件管理：`neovim`、`ranger`
+- 构建和开发：`git`、`curl`、`ca-certificates`、`gnupg`、`lsb-release`、`software-properties-common`、`cmake`、`clang-format`、`ccls`
+- Python：`python3`、`python3-pip`、`python3-venv`、`python3-dev`
+- 搜索和效率工具：`ripgrep`、`fd-find`、`fzf`、`autojump`、`htop`
+- 桌面辅助工具：`xclip`、`gnome-tweaks`
+- Node 和认证工具基础：`nodejs`、`npm`
+- 远程访问和同步：`openssh-server`、`rclone`
 
-Neovim can continue to use the unstable PPA if that remains desired. If the PPA step fails, the script should fail clearly rather than silently leaving an older editor.
+Neovim 可以继续使用 unstable PPA，前提是仍然需要较新的版本。如果 PPA 步骤失败，脚本应明确失败，而不是静默留下旧版编辑器。
 
 ## Oh My Zsh
 
-The script should install Oh My Zsh when `~/.oh-my-zsh` is absent.
+当 `~/.oh-my-zsh` 不存在时，脚本应自动安装 Oh My Zsh。
 
-It should avoid uncontrolled shell switching during installation. The user's login shell can be changed separately with `chsh -s "$(command -v zsh)"` when needed, because that can require a password and may behave differently across machines.
+安装时应避免安装脚本自动切换 shell 造成不可控行为。需要时可单独通过以下命令切换登录 shell，因为该操作通常需要密码，并且不同机器上的行为可能不同：
 
-The vendored custom plugins already stored in dotfiles remain the source for:
+```bash
+chsh -s "$(command -v zsh)"
+```
+
+dotfiles 中已经 vendored 的自定义插件继续作为来源：
 
 - `zsh-autosuggestions`
 - `zsh-completions`
 - `zsh-syntax-highlighting`
 
-## Shell Robustness
+## Shell 健壮性
 
-`zsh/zshrc` should be changed so ROS-related setup is conditional:
+`zsh/zshrc` 应改成有条件加载 ROS 相关环境：
 
-- Source `/opt/ros/jazzy/setup.zsh` only if the file exists.
-- Source `~/ros2_ws/install/setup.zsh` only if the file exists.
-- Register argcomplete for `ros2` and `colcon` only when those commands are available.
+- 仅当 `/opt/ros/jazzy/setup.zsh` 存在时才 source。
+- 仅当 `~/ros2_ws/install/setup.zsh` 存在时才 source。
+- 仅当 `ros2` 和 `colcon` 命令存在时才注册 argcomplete。
 
-This prevents a newly restored non-ROS system from printing startup errors.
+这样新系统即使还没有安装 ROS 2，也不会在启动 zsh 时打印错误。
 
-## Node And Codex
+## Node 和 Codex
 
-The bootstrap script should:
+bootstrap 脚本应：
 
-- Install or update `n` with npm.
-- Install stable Node through `n`.
-- Install `@openai/codex` globally.
-- Optionally install `@loongphy/codex-auth` if the current workflow still uses it.
-- Print clear next steps for interactive authentication.
+- 通过 npm 安装或更新 `n`。
+- 通过 `n` 安装稳定版 Node。
+- 全局安装 `@openai/codex`。
+- 如果当前工作流仍需要，则可选安装 `@loongphy/codex-auth`。
+- 输出清晰的后续交互认证步骤。
 
-The script must not store or commit Codex credentials.
+脚本不得保存或提交 Codex 凭据。
 
-## Obsidian Sync
+## Obsidian 同步
 
-The existing dotfiles Obsidian assets remain the source of truth:
+现有 dotfiles 中的 Obsidian 资源继续作为唯一来源：
 
 - `obsidian/bin/obsidian-sync`
 - `obsidian/bin/obsidian-sync-init`
@@ -131,18 +135,18 @@ The existing dotfiles Obsidian assets remain the source of truth:
 - `obsidian/systemd/user/obsidian-sync-on-login.service`
 - `obsidian/setup_obsidian_sync.sh`
 
-The bootstrap flow should:
+bootstrap 流程应：
 
-- Ensure `rclone` is installed.
-- Check whether the `gdrive:` remote exists.
-- If it is missing, print a clear instruction to run `rclone config`.
-- Run the existing Obsidian setup script after dotbot creates symlinks.
+- 确保已安装 `rclone`。
+- 检查是否存在 `gdrive:` 远端。
+- 如果缺少远端，提示用户运行 `rclone config` 完成 Google Drive 授权。
+- 在 dotbot 创建软链接后，运行现有 Obsidian 设置脚本。
 
-It should not commit `~/.config/rclone/rclone.conf`, rclone bisync caches, or Vault contents into dotfiles.
+不得将 `~/.config/rclone/rclone.conf`、rclone bisync 缓存或 Vault 内容提交进 dotfiles。
 
-## Verification
+## 验证
 
-The final verification output should check:
+最终验证输出应检查：
 
 - `git --version`
 - `ssh -T git@github.com`
@@ -155,40 +159,40 @@ The final verification output should check:
 - `npm --version`
 - `codex --version`
 - `rclone version`
-- `rclone listremotes` contains `gdrive:`
+- `rclone listremotes` 中包含 `gdrive:`
 - `test -L ~/.local/bin/obsidian-sync`
 - `systemctl --user is-enabled obsidian-sync-on-login.service`
 
-Failures should be reported as actionable next steps instead of being hidden.
+验证失败时，应输出可操作的后续步骤，而不是隐藏失败。
 
-## Documentation Update
+## 文档更新
 
-Update `Documents/Obsidian Vault/40-Resources/开发环境恢复手册.md` after implementation.
+实现后更新 `Documents/Obsidian Vault/40-Resources/开发环境恢复手册.md`。
 
-The manual should be reorganized around:
+手册应围绕以下流程重组：
 
-1. Fresh system baseline.
-2. Manual credential setup.
-3. Clone dotfiles.
-4. Run the bootstrap script.
-5. Complete Codex and rclone interactive authorization.
-6. Verify the restored environment.
-7. ROS 2 installation is handled separately.
+1. 新系统基础准备。
+2. 手动配置凭据。
+3. 克隆 dotfiles。
+4. 运行 bootstrap 脚本。
+5. 完成 Codex 和 rclone 交互授权。
+6. 验证恢复后的环境。
+7. ROS 2 安装单独处理。
 
-Before and after modifying the Vault, run `obsidian-sync` according to the Vault `AGENTS.md` rule.
+修改 Vault 前后都必须按照 Vault 根目录 `AGENTS.md` 的规则运行 `obsidian-sync`。
 
-## Risks
+## 风险
 
-- `sudo` prompts are expected during package installation and shell changes.
-- Network failures can interrupt apt, npm, or rclone setup.
-- Global npm package installation may depend on the current Node/npm state.
-- The existing uncommitted `install_packages.sh` change and untracked `.codex` file in dotfiles must not be overwritten accidentally.
+- 安装软件包和切换 shell 时预期会出现 `sudo` 密码提示。
+- 网络问题可能中断 apt、npm 或 rclone 设置。
+- 全局 npm 包安装依赖当前 Node/npm 状态。
+- dotfiles 中已有未提交的 `install_packages.sh` 修改和未跟踪 `.codex` 文件，后续实现时不得意外覆盖或纳入无关提交。
 
-## Acceptance Criteria
+## 验收标准
 
-- A fresh Ubuntu 24.04 machine can run one bootstrap script after cloning dotfiles.
-- The script can be rerun without damaging existing configuration.
-- zsh starts cleanly before ROS 2 is installed.
-- Codex CLI is installed, and the user receives a clear login instruction.
-- rclone and Obsidian sync links are installed, and the user receives a clear Google Drive authorization instruction when needed.
-- The recovery manual matches the implemented flow.
+- 全新 Ubuntu 24.04 机器在克隆 dotfiles 后，可以通过一个 bootstrap 脚本恢复基础环境。
+- 脚本可重复执行，不破坏已有配置。
+- ROS 2 尚未安装时，zsh 仍能干净启动。
+- Codex CLI 已安装，并向用户输出明确的登录说明。
+- rclone 和 Obsidian 同步链接已安装；缺少 Google Drive 授权时，向用户输出明确配置说明。
+- 开发环境恢复手册与实际实现流程一致。
