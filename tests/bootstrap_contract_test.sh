@@ -77,6 +77,15 @@ assert_executable obsidian/bin/obsidian-sync
 assert_executable obsidian/bin/obsidian-sync-init
 assert_executable ros2/bin/ros2-ws-sync
 assert_executable ros2/bin/ros2-ws-sync-init
+assert_file obsidian/rclone/obsidian-bisync-filter.txt
+assert_contains obsidian/bin/obsidian-sync-init "--resync"
+assert_contains obsidian/bin/obsidian-sync-init "这不是日常同步命令"
+assert_contains obsidian/bin/obsidian-sync-init "Path1 本地文件可能覆盖 Path2 云端版本"
+assert_contains obsidian/bin/obsidian-sync-init "请输入 y 继续"
+assert_contains obsidian/bin/obsidian-sync-init "read -r confirm"
+assert_contains obsidian/bin/obsidian-sync-init '"${confirm}" == "y"'
+assert_contains obsidian/bin/obsidian-sync-init "已取消 Obsidian 同步状态重建。"
+assert_not_contains obsidian/bin/obsidian-sync-init "--create-empty-src-dirs"
 assert_file ros2/rclone/ros2-ws-bisync-filter.txt
 assert_contains ros2/bin/ros2-ws-sync "gdrive:sync_space/ros2_ws"
 assert_contains ros2/bin/ros2-ws-sync-init "--resync"
