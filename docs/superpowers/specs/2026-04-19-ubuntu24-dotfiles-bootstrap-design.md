@@ -168,16 +168,19 @@ Neovim 的 Python 工具解析逻辑应同步改为优先识别：
 - `ros2/.style.yapf`：来源为当前 `/home/fei/ros2_ws/.style.yapf`，作为 Python yapf 格式化标准。
 - `ros2/cmake-format.yaml`：来源为当前 `/home/fei/ros2_ws/cmake-format.yaml`，作为 CMake 格式化标准。
 
-dotbot 应负责将这些文件链接到 ROS 工作区根目录：
+本阶段只负责把标准文件放入 dotfiles，不在 bootstrap 或 dotbot 中链接到 `~/ros2_ws`。原因是新系统恢复基础环境时，ROS 2 和 ROS 工作区可能尚未安装或恢复。
+
+后续恢复 ROS 工作区时，再由单独步骤将这些标准文件复制或链接到：
 
 - `~/ros2_ws/.style.yapf`
 - `~/ros2_ws/cmake-format.yaml`
 
-如果 `~/ros2_ws` 尚不存在，dotbot 链接步骤应能创建目录，或 bootstrap 应在调用 dotbot 前创建空目录。ROS 2 安装和工作区源码恢复仍不属于本阶段范围。
+ROS 2 安装、工作区源码恢复，以及格式化标准文件落地到 `~/ros2_ws` 的动作，均不属于本阶段 bootstrap 主路径。
 
 Neovim 的 Python 格式化默认策略应与 ROS 工作区规则一致：
 
 - 当文件位于 `~/ros2_ws` 下，并且 `~/ros2_ws/.style.yapf` 存在时，默认使用 `~/dev_env/bin/yapf -i --style=~/ros2_ws/.style.yapf`。
+- 如果 `~/ros2_ws/.style.yapf` 尚不存在，则不强行创建 ROS 工作区；只提示需要在恢复 ROS 工作区后落地 dotfiles 中的 `ros2/.style.yapf`。
 - Python lint 和 import 检查继续使用 `ruff`。
 - Python 类型检查使用 `pyrefly`，不再默认使用 `pyright`。
 - 不再将 `ruff format` 作为 ROS 工作区 Python 文件的默认格式化器。
@@ -233,8 +236,8 @@ bootstrap 流程应：
 - `rclone version`
 - `rclone listremotes` 中包含 `gdrive:`
 - `test -L ~/.local/bin/obsidian-sync`
-- `test -L ~/ros2_ws/.style.yapf`
-- `test -L ~/ros2_ws/cmake-format.yaml`
+- `test -f ~/dotfiles/ros2/.style.yapf`
+- `test -f ~/dotfiles/ros2/cmake-format.yaml`
 - `systemctl --user is-enabled obsidian-sync-on-login.service`
 
 验证失败时，应输出可操作的后续步骤，而不是隐藏失败。
@@ -260,7 +263,7 @@ bootstrap 流程应：
 - 安装软件包和切换 shell 时预期会出现 `sudo` 密码提示。
 - 网络问题可能中断 apt、npm 或 rclone 设置。
 - 全局 npm 包安装依赖当前 Node/npm 状态。
-- `~/ros2_ws` 可能尚未恢复源码；本阶段只负责放置格式化标准文件，不负责 ROS 2 或工作区源码安装。
+- `~/ros2_ws` 可能尚未恢复源码；本阶段只负责把格式化标准文件纳入 dotfiles，不负责链接到 ROS 工作区，也不负责 ROS 2 或工作区源码安装。
 - dotfiles 中已有未提交的 `install_packages.sh` 修改和未跟踪 `.codex` 文件。由于 `install_packages.sh` 将在本次改造中删除，实施前需要确认其唯一新增内容 `openssh-server` 已合并进 bootstrap；`.codex` 仍不得意外纳入无关提交。
 
 ## 验收标准
@@ -269,7 +272,7 @@ bootstrap 流程应：
 - 脚本可重复执行，不破坏已有配置。
 - ROS 2 尚未安装时，zsh 仍能干净启动。
 - `~/dev_env` 已创建，且包含 `yapf`、`ruff`、`pyrefly` 等 Neovim/ROS Python 开发工具。
-- `ros2_ws/.style.yapf` 和 `ros2_ws/cmake-format.yaml` 的标准内容由 dotfiles 管理并链接到工作区。
+- `ros2/.style.yapf` 和 `ros2/cmake-format.yaml` 的标准内容由 dotfiles 管理，但 bootstrap 不要求 `~/ros2_ws` 存在。
 - Neovim 在 ROS 工作区 Python 文件中默认使用 yapf 格式化，lint/type check 使用 `ruff + pyrefly`。
 - Codex CLI 已安装，并向用户输出明确的登录说明。
 - rclone 和 Obsidian 同步链接已安装；缺少 Google Drive 授权时，向用户输出明确配置说明。
