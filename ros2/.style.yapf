@@ -1,0 +1,29 @@
+[style]
+# 基于 Google 风格，参考 https://zh-google-styleguide.readthedocs.io/en/latest/google-python-styleguide/contents.html
+based_on_style = google
+
+# 行宽 120（Google 默认 80，本项目调整为 120）
+column_limit = 120
+
+# 缩进
+indent_width = 4
+continuation_indent_width = 4
+
+# Google 风格：不在括号内添加空格
+spaces_around_dict_delimiters = False
+spaces_around_list_delimiters = False
+spaces_around_tuple_delimiters = False
+space_inside_brackets = False
+
+# Google 风格：不在默认赋值周围添加额外空格
+spaces_around_default_or_named_assign = False
+
+# 关闭括号样式
+dedent_closing_brackets = True
+coalesce_brackets = False
+
+# 导入分组
+split_penalty_import_names = 3000
+
+# 字典每个键值对单独一行
+each_dict_entry_on_separate_line = True

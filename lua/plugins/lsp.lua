@@ -28,6 +28,7 @@ return {
         ensure_installed = {
           -- Python 工具链
           { "debugpy", condition = function() return has_pip end },
+          { "yapf", condition = function() return has_pip end },
           { "pyrefly", condition = function() return has_pip end },
           { "ruff", condition = function() return has_pip end },
           { "cmake", condition = function() return has_pip end },
@@ -81,13 +82,13 @@ return {
         local env = vim.fn.environ()
         local venv = env.VIRTUAL_ENV or env.CONDA_PREFIX
         local configured_venv = env.NVIM_PYTHON_VENV
-        local dev_venv = vim.fn.expand("~/dev_venv")
+        local dev_env = vim.fn.expand("~/dev_env")
 
         if not venv or venv == "" then
           if configured_venv and configured_venv ~= "" then
             venv = vim.fn.expand(configured_venv)
-          elseif vim.fn.isdirectory(dev_venv) == 1 and vim.fn.executable(dev_venv .. "/bin/python") == 1 then
-            venv = dev_venv
+          elseif vim.fn.isdirectory(dev_env) == 1 and vim.fn.executable(dev_env .. "/bin/python") == 1 then
+            venv = dev_env
           end
         end
 
@@ -108,8 +109,35 @@ return {
 
       local python_env = python_lsp_env()
       local python_paths = python_env and vim.split(python_env.PATH, ":", { trimempty = true }) or nil
+      local yapf_cmd = resolve_executable("yapf", python_paths)
       local pyrefly_cmd = resolve_executable("pyrefly", python_paths)
       local ruff_cmd = resolve_executable("ruff", python_paths)
+
+      local function is_under_path(path, root)
+        local normalized_path = vim.fs.normalize(path)
+        local normalized_root = vim.fs.normalize(root)
+        return normalized_path == normalized_root or vim.startswith(normalized_path, normalized_root .. "/")
+      end
+
+      local function format_ros_python_with_yapf()
+        local file = vim.api.nvim_buf_get_name(0)
+        local ros_ws = vim.fn.expand("~/ros2_ws")
+        local style = ros_ws .. "/.style.yapf"
+
+        if not yapf_cmd then
+          vim.notify("yapf not found. Install it in ~/dev_env or set NVIM_PYTHON_VENV.", vim.log.levels.WARN)
+          return
+        end
+
+        if file == "" or not is_under_path(file, ros_ws) or vim.fn.filereadable(style) ~= 1 then
+          vim.notify("ROS yapf style not found for this buffer. Restore ~/ros2_ws/.style.yapf first.", vim.log.levels.WARN)
+          return
+        end
+
+        local view = vim.fn.winsaveview()
+        vim.cmd("%!" .. vim.fn.shellescape(yapf_cmd) .. " --style=" .. vim.fn.shellescape(style))
+        vim.fn.winrestview(view)
+      end
 
       capabilities.textDocument = {
         synchronization = {
@@ -146,11 +174,10 @@ return {
         on_attach = function(client, bufnr)
           -- 禁用 Ruff 的类型相关检查（交给 pyrefly）
           client.server_capabilities.hoverProvider = false
-          client.server_capabilities.documentFormattingProvider = true
+          client.server_capabilities.documentFormattingProvider = false
 
           -- 绑定快捷键
-          vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { buffer = bufnr })
-          vim.keymap.set("v", "<leader>f", ":'<,'>!" .. (ruff_cmd or "ruff") .. " format --line-length=140 -<CR>", { desc = "Ruff format selection" })
+          vim.keymap.set("n", "<leader>f", format_ros_python_with_yapf, { buffer = bufnr, desc = "YAPF format ROS Python" })
         end,
         init_options = {
           settings = {
@@ -160,8 +187,8 @@ return {
               select = { "E", "F", "W", "I", "B", "D" },
               ignore = {"F841", "E501"}
             },
-            format = {      -- 格式化／import 排序
-              enable = true,
+            format = {
+              enable = false,
             },
           },
         },

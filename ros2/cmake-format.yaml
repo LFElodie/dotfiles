@@ -1,0 +1,10 @@
+# CMake format configuration
+# See https://github.com/cheshirekow/cmake_format/blob/main/cmake_format/config.py
+
+parse_locals: true
+max_lines: 100
+tab_size: 2
+bullet_char: "-"
+keyword_case: "upper"
+always_break: false
+autosort: true
