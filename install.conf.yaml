@@ -8,13 +8,11 @@
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
+  - [bash install_scripts/modules/zsh_plugins.sh setup_repo, Setup zsh plugins]
 
 - link:
     ~/.tmux.conf: tmux.conf
     ~/.zshrc: zsh/zshrc
-    ~/.oh-my-zsh/custom/plugins:
-      glob: true
-      path: zsh/custom/plugins/*
     ~/.config/nvim/init.lua: init.lua
     ~/.config/nvim/lua:
       glob: true

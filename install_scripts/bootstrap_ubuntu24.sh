@@ -7,6 +7,7 @@ source "$SCRIPT_DIR/lib/common.sh"
 source "$SCRIPT_DIR/modules/preflight_ubuntu24.sh"
 source "$SCRIPT_DIR/modules/apt_packages.sh"
 source "$SCRIPT_DIR/modules/oh_my_zsh.sh"
+source "$SCRIPT_DIR/modules/zsh_plugins.sh"
 source "$SCRIPT_DIR/modules/dotbot.sh"
 source "$SCRIPT_DIR/modules/dev_env.sh"
 source "$SCRIPT_DIR/modules/node_codex.sh"
@@ -17,6 +18,7 @@ main() {
   run_step "preflight" run_preflight_ubuntu24
   run_step "apt packages" run_apt_packages
   run_step "oh my zsh" run_oh_my_zsh
+  run_step "zsh plugins" run_zsh_plugins
   run_step "dotbot" run_dotbot
   run_step "dev env" run_dev_env
   run_step "node and codex" run_node_codex
@@ -25,4 +27,3 @@ main() {
 }
 
 main "$@"
-

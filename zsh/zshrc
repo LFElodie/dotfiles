@@ -3,6 +3,7 @@ export LANGUAGE='en_US:en'
 export LC_ALL='en_US.UTF-8'
 ##### Zsh/Oh-my-Zsh Configuration
 export ZSH="$HOME/.oh-my-zsh"
+export ZSH_CUSTOM="$HOME/.local/share/oh-my-zsh/custom"
 
 DISABLE_AUTO_UPDATE="true"
 DISABLE_UPDATE_PROMPT="true"

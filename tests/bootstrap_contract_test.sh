@@ -34,6 +34,7 @@ modules=(
   preflight_ubuntu24
   apt_packages
   oh_my_zsh
+  zsh_plugins
   dotbot
   dev_env
   node_codex
@@ -46,6 +47,7 @@ assert_executable install_scripts/bootstrap_ubuntu24.sh
 assert_contains install_scripts/bootstrap_ubuntu24.sh "run_preflight_ubuntu24"
 assert_contains install_scripts/bootstrap_ubuntu24.sh "run_apt_packages"
 assert_contains install_scripts/bootstrap_ubuntu24.sh "run_oh_my_zsh"
+assert_contains install_scripts/bootstrap_ubuntu24.sh "run_zsh_plugins"
 assert_contains install_scripts/bootstrap_ubuntu24.sh "run_dotbot"
 assert_contains install_scripts/bootstrap_ubuntu24.sh "run_dev_env"
 assert_contains install_scripts/bootstrap_ubuntu24.sh "run_node_codex"
@@ -100,9 +102,15 @@ assert_not_contains ros2/bin/ros2-ws-sync-init "--create-empty-src-dirs"
 assert_contains ros2/rclone/ros2-ws-bisync-filter.txt "- build/**"
 assert_contains ros2/rclone/ros2-ws-bisync-filter.txt "- install/**"
 assert_contains ros2/rclone/ros2-ws-bisync-filter.txt "- log/**"
+assert_contains install.conf.yaml "bash install_scripts/modules/zsh_plugins.sh setup_repo"
 assert_contains install.conf.yaml "~/.local/bin/ros2-ws-sync: ros2/bin/ros2-ws-sync"
 assert_contains install.conf.yaml "~/.local/bin/ros2-ws-sync-init: ros2/bin/ros2-ws-sync-init"
 assert_contains install.conf.yaml "~/.config/rclone/ros2-ws-bisync-filter.txt: ros2/rclone/ros2-ws-bisync-filter.txt"
+assert_not_contains install.conf.yaml "~/.oh-my-zsh/custom/plugins:"
+assert_not_contains install.conf.yaml "zsh/custom/plugins/*"
+assert_not_contains .gitmodules "submodule.zsh/custom/plugins/zsh-autosuggestions"
+assert_not_contains .gitmodules "submodule.zsh/custom/plugins/zsh-completions"
+assert_not_contains .gitmodules "submodule.zsh/custom/plugins/zsh-syntax-highlighting"
 assert_not_contains install.conf.yaml "ros2-ws-sync-on-login"
 [[ ! -e "$ROOT/ccls" ]] || fail "legacy ccls file should be removed"
 [[ ! -e "$ROOT/clang-format" ]] || fail "legacy root clang-format file should be removed"
@@ -113,6 +121,7 @@ assert_not_contains install.conf.yaml "setup_packages.sh"
 assert_contains install_scripts/modules/apt_packages.sh "neovim-ppa/unstable"
 assert_contains install_scripts/modules/dev_env.sh "python3 -m venv"
 assert_contains install_scripts/modules/oh_my_zsh.sh "CHSH=no"
+assert_contains zsh/zshrc 'export ZSH_CUSTOM="$HOME/.local/share/oh-my-zsh/custom"'
 assert_contains install_scripts/modules/verify.sh "verify_environment"
 assert_contains install_scripts/modules/verify.sh "clangd"
 assert_contains install_scripts/modules/verify.sh "cmake-format"
