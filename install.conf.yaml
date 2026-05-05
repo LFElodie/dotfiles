@@ -9,10 +9,14 @@
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
   - [bash install_scripts/modules/zsh_plugins.sh setup_repo, Setup zsh plugins]
+  - [bash install_scripts/modules/fcitx5_rime.sh setup_repo, Setup rime-ice repo]
 
 - link:
+    ~/.pam_environment: pam_environment
     ~/.tmux.conf: tmux.conf
     ~/.zshrc: zsh/zshrc
+    ~/.config/fcitx5/profile: fcitx5/profile
+    ~/.local/share/fcitx5/rime/default.custom.yaml: fcitx5/rime/default.custom.yaml
     ~/.config/nvim/init.lua: init.lua
     ~/.config/nvim/lua:
       glob: true
@@ -31,6 +35,7 @@
     ~/.config/systemd/user/obsidian-sync-on-login.service: obsidian/systemd/user/obsidian-sync-on-login.service
 
 - shell:
+  - [bash install_scripts/modules/fcitx5_rime.sh deploy, Deploy rime-ice]
   - [bash set_git.sh, Setting git]
   - [bash install_scripts/install_font.sh, Install nerd font]
   - [bash obsidian/setup_obsidian_sync.sh, Setup Obsidian sync service]

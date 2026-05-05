@@ -39,6 +39,13 @@ run_apt_packages() {
     unzip
     wget
     fontconfig
+    fcitx5
+    fcitx5-rime
+    fcitx5-config-qt
+    fcitx5-frontend-all
+    librime-plugin-lua
+    librime-plugin-charcode
+    librime-plugin-octagram
   )
 
   ensure_sudo
