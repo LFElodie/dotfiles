@@ -1,4 +1,18 @@
 return {
-  -- 退出INSERT切换英文
-  { "hai-sea/vim-fcitx2en", event = "VeryLazy" },
+  {
+    "pysan3/fcitx5.nvim",
+    cond = function()
+      return vim.fn.executable("fcitx5-remote") == 1
+    end,
+    event = "ModeChanged",
+    config = function()
+      require("fcitx5").setup({
+        imname = {
+          norm = "keyboard-us",
+          cmd = "keyboard-us",
+        },
+        remember_prior = true,
+      })
+    end,
+  },
 }
