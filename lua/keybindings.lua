@@ -4,8 +4,7 @@ local keymap = vim.api.nvim_set_keymap
 keymap("n", "k", "v:count == 0 ? 'gk' : 'k'", { noremap = true, expr = true, silent = true })
 keymap("n", "j", "v:count == 0 ? 'gj' : 'j'", { noremap = true, expr = true, silent = true })
 
-keymap("i", "<esc>", "<esc>:w<return>:noh<return><esc>", { noremap = true })
-keymap("n", "<esc>", ":w<return>:noh<return>", { noremap = true })
+keymap("n", "<esc>", "<cmd>nohlsearch<cr>", { noremap = true, silent = true })
 
 -- Y yank until the end of line
 keymap("n", "Y", "y$", { noremap = true })

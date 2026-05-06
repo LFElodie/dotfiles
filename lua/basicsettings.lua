@@ -51,6 +51,15 @@ vim.api.nvim_exec(
   false
 )
 
+vim.api.nvim_create_autocmd("InsertLeave", {
+  group = vim.api.nvim_create_augroup("AutoSaveOnInsertLeave", { clear = true }),
+  callback = function()
+    if vim.bo.buftype == "" and vim.bo.modifiable and vim.bo.modified and not vim.bo.readonly then
+      vim.cmd("silent update")
+    end
+  end,
+})
+
 --  }}}
 
 -- Searching {{{
