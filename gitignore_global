@@ -45,3 +45,5 @@ __pycache__/
 
 build/
 compile_commands.json
+
+.codex
