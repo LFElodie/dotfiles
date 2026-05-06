@@ -16,6 +16,7 @@
     ~/.tmux.conf: tmux.conf
     ~/.zshrc: zsh/zshrc
     ~/.config/fcitx5/profile: fcitx5/profile
+    ~/.config/fcitx5/config: fcitx5/config
     ~/.local/share/fcitx5/rime/default.custom.yaml: fcitx5/rime/default.custom.yaml
     ~/.config/nvim/init.lua: init.lua
     ~/.config/nvim/lua:
