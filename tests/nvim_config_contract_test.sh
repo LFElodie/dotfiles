@@ -38,5 +38,9 @@ not_contains lua/plugins/lsp.lua "cmake-language-server"
 not_contains lua/plugins/lsp.lua "ruff format --line-length"
 contains lua/plugins/telescope.lua "dev_env"
 not_contains lua/plugins/telescope.lua "dev_venv"
+contains lua/keybindings.lua "write_if_modified"
+contains lua/keybindings.lua "vim.cmd(\"silent! nohlsearch\")"
+contains lua/keybindings.lua "vim.cmd(\"silent write\")"
+contains lua/keybindings.lua "keymap(\"n\", \"<esc>\", write_if_modified"
 
 printf 'nvim config contract checks passed\n'

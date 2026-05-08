@@ -1,10 +1,22 @@
-local keymap = vim.api.nvim_set_keymap
+local keymap = vim.keymap.set
+
+local function write_if_modified()
+  vim.cmd("silent! nohlsearch")
+
+  if vim.bo.buftype ~= "" or not vim.bo.modifiable or vim.bo.readonly then
+    return
+  end
+
+  if vim.bo.modified and vim.fn.expand("%") ~= "" then
+    vim.cmd("silent write")
+  end
+end
 
 --Remap for dealing with word wrap
 keymap("n", "k", "v:count == 0 ? 'gk' : 'k'", { noremap = true, expr = true, silent = true })
 keymap("n", "j", "v:count == 0 ? 'gj' : 'j'", { noremap = true, expr = true, silent = true })
 
-keymap("n", "<esc>", "<cmd>nohlsearch<cr>", { noremap = true, silent = true })
+keymap("n", "<esc>", write_if_modified, { noremap = true, silent = true })
 
 -- Y yank until the end of line
 keymap("n", "Y", "y$", { noremap = true })
