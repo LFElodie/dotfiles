@@ -1,4 +1,5 @@
 # Global Codex Guidelines
+使用中文交流及编写文档,如spec、README 等
 
 ## Git 提交规范
 
