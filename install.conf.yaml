@@ -35,6 +35,7 @@
     ~/.config/rclone/ros2-ws-bisync-filter.txt: ros2/rclone/ros2-ws-bisync-filter.txt
     ~/.config/systemd/user/obsidian-sync-on-login.service: obsidian/systemd/user/obsidian-sync-on-login.service
     ~/.codex/AGENTS.md: codex/AGENTS.md
+    ~/.ssh/config: ssh/config
 
 - shell:
   - [bash install_scripts/modules/fcitx5_rime.sh deploy, Deploy rime-ice]

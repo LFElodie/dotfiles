@@ -1,0 +1,16 @@
+Host clawpc
+    HostName 100.65.140.118
+    User fei
+
+Host laptop
+    HostName 100.123.226.79
+    User fei
+
+Host feipc
+    HostName 100.83.121.30
+    User fei
+
+Host github.com
+    HostName ssh.github.com
+    User git
+    Port 443
