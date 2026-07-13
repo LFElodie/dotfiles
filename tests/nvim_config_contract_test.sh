@@ -42,5 +42,12 @@ contains lua/keybindings.lua "write_if_modified"
 contains lua/keybindings.lua "vim.cmd(\"silent! nohlsearch\")"
 contains lua/keybindings.lua "vim.cmd(\"silent write\")"
 contains lua/keybindings.lua "keymap(\"n\", \"<esc>\", write_if_modified"
+[[ -f "$ROOT/lua/plugins/gruvbox.lua" ]] || fail "missing Gruvbox theme plugin"
+[[ ! -e "$ROOT/lua/plugins/everforest.lua" ]] || fail "Everforest theme plugin should be removed"
+contains lua/plugins/gruvbox.lua '"gruvbox-community/gruvbox"'
+contains lua/plugins/gruvbox.lua 'vim.cmd.colorscheme("gruvbox")'
+contains lua/plugins/lualine.lua 'theme = "gruvbox"'
+contains lua/plugins/bufferline.lua 'local function gruvbox_highlights(defaults)'
+not_contains lua/plugins/bufferline.lua "everforest"
 
 printf 'nvim config contract checks passed\n'

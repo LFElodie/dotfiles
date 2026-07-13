@@ -24,9 +24,9 @@
       path: lua/*
     ~/.config/ranger: ranger
     ~/.config/kitty/kitty.conf: kitty/kitty.conf
-    ~/.config/kitty/light-theme.auto.conf: kitty/latte-gruvbox.conf
-    ~/.config/kitty/no-preference-theme.auto.conf: kitty/latte-gruvbox.conf
-    ~/.config/kitty/dark-theme.auto.conf: kitty/catppuccin/themes/mocha.conf
+    ~/.config/kitty/light-theme.auto.conf: kitty/gruvbox-light.conf
+    ~/.config/kitty/no-preference-theme.auto.conf: kitty/gruvbox-light.conf
+    ~/.config/kitty/dark-theme.auto.conf: kitty/gruvbox-dark.conf
     ~/.config/starship.toml: starship/starship.toml
     ~/.gitignore_global: gitignore_global
     ~/.local/bin/obsidian-sync: obsidian/bin/obsidian-sync

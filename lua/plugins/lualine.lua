@@ -33,7 +33,6 @@ return {
               end
               return " " .. table.concat(names, ", ")
             end,
-            color = { fg = "#a6e3a1" },
           }
         },
         lualine_x = {
