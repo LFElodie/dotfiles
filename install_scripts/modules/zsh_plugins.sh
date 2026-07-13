@@ -11,6 +11,7 @@ ZSH_PLUGIN_SPECS=(
   "zsh-autosuggestions|https://github.com/zsh-users/zsh-autosuggestions.git"
   "zsh-completions|https://github.com/zsh-users/zsh-completions.git"
   "zsh-syntax-highlighting|https://github.com/zsh-users/zsh-syntax-highlighting.git"
+  "fzf-tab|https://github.com/Aloxaf/fzf-tab.git"
 )
 
 clone_plugin() {

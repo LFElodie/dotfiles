@@ -27,7 +27,9 @@ run_apt_packages() {
     ripgrep
     fd-find
     fzf
-    autojump
+    zoxide
+    direnv
+    git-delta
     htop
     xclip
     gnome-tweaks

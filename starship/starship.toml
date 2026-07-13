@@ -1,0 +1,59 @@
+"$schema" = "https://starship.rs/config-schema.json"
+
+add_newline = false
+
+format = """
+$username\
+$hostname\
+$directory\
+$git_branch\
+$git_status\
+$python\
+$custom\
+$line_break\
+$status\
+$character"""
+
+right_format = "$cmd_duration$time"
+
+[username]
+show_always = true
+format = "[$user](bold cyan)"
+
+[hostname]
+ssh_only = false
+format = "[@$hostname](bold green) "
+
+[directory]
+style = "bold yellow"
+truncation_length = 4
+truncate_to_repo = false
+
+[git_branch]
+format = "on [$symbol$branch]($style) "
+
+[git_status]
+format = "([$all_status$ahead_behind]($style) )"
+
+[status]
+disabled = false
+pipestatus = true
+format = "[$status]($style) "
+
+[time]
+disabled = false
+format = "[$time]($style)"
+
+[character]
+vimcmd_symbol = "[❮](bold yellow)"
+vimcmd_replace_one_symbol = "[R](bold purple)"
+vimcmd_replace_symbol = "[R](bold purple)"
+vimcmd_visual_symbol = "[V](bold purple)"
+
+[custom.ros]
+command = "printf '%s' \"$ROS_DISTRO\""
+when = "test -n \"$ROS_DISTRO\""
+shell = ["sh"]
+symbol = "󰚩 "
+style = "bold blue"
+format = "via [$symbol$output]($style) "

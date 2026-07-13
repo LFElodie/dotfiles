@@ -23,6 +23,14 @@ verify_environment() {
   verify_command "zsh" zsh --version
   verify_command "Oh My Zsh" test -d "$HOME/.oh-my-zsh"
   verify_command "zshrc link" test -L "$HOME/.zshrc"
+  verify_command "Starship" starship --version
+  verify_command "Starship config link" test -L "$HOME/.config/starship.toml"
+  verify_command "zoxide" zoxide --version
+  verify_command "fzf-tab" test -d "$HOME/.local/share/oh-my-zsh/custom/plugins/fzf-tab"
+  verify_command "direnv" direnv version
+  verify_command "git-delta" delta --version
+  verify_command "fd compatibility command" fd --version
+  verify_command "ROS2 workspace envrc link" test -L "$HOME/ros2_ws/.envrc"
   verify_command "dev_env yapf" test -x "$HOME/dev_env/bin/yapf"
   verify_command "dev_env pyrefly" test -x "$HOME/dev_env/bin/pyrefly"
   verify_command "dev_env ruff" test -x "$HOME/dev_env/bin/ruff"

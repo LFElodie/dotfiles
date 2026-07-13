@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+workspace_setup="$PWD/install/setup.bash"
+if [[ -f "$workspace_setup" ]]; then
+  watch_file "$workspace_setup"
+  source "$workspace_setup"
+elif [[ -f /opt/ros/jazzy/setup.bash ]]; then
+  source /opt/ros/jazzy/setup.bash
+else
+  printf '未找到 ROS 2 Jazzy 环境。\n' >&2
+  return 1
+fi
+unset workspace_setup
+
+export ROS_AUTOMATIC_DISCOVERY_RANGE="${ROS_AUTOMATIC_DISCOVERY_RANGE:-LOCALHOST}"
+if [[ -z "${RCUTILS_CONSOLE_OUTPUT_FORMAT:-}" ]]; then
+  export RCUTILS_CONSOLE_OUTPUT_FORMAT='[{severity}] [{time}]: {message}'
+fi

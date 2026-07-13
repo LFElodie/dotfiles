@@ -140,7 +140,7 @@ install_scripts/
 
 - 删除根目录 `install_packages.sh`，其职责由 `install_scripts/bootstrap_ubuntu24.sh` 接管。
 - 删除或停用 `install_scripts/setup_packages.sh`，其软件包安装逻辑合并进 bootstrap。
-- 保留 `install_scripts/install_font.sh`，因为它是 dotbot 后置的字体缓存刷新步骤，职责独立。
+- 保留 `install_scripts/install_font.sh`，由它负责固定版本字体包的下载、校验、精简安装与缓存刷新，职责独立。
 - `install_scripts/setup_mirrors.sh` 暂不接入默认流程；如果保留，应在 README 或手册中明确它是可选脚本，不属于一键恢复主路径。
 
 清理后的主路径应清晰：bootstrap 负责编排，模块负责具体安装和验证，`./install` 负责 dotbot 链接和轻量配置，其他脚本只保留独立、可解释的职责。

@@ -1,6 +1,18 @@
 export LANG='en_US.UTF-8'
 export LANGUAGE='en_US:en'
 export LC_ALL='en_US.UTF-8'
+
+# Keep command lookup deterministic and avoid duplicated PATH entries.
+typeset -U path PATH
+path=(${path:#/usr/include})
+path=(${path:#/usr/include/})
+path=(${path:#/usr/bin/})
+path=(
+    "$HOME/.local/bin"
+    "$HOME/dev_env/bin"
+    $path
+)
+
 ##### Zsh/Oh-my-Zsh Configuration
 export ZSH="$HOME/.oh-my-zsh"
 export ZSH_CUSTOM="$HOME/.local/share/oh-my-zsh/custom"
@@ -8,26 +20,30 @@ export ZSH_CUSTOM="$HOME/.local/share/oh-my-zsh/custom"
 DISABLE_AUTO_UPDATE="true"
 DISABLE_UPDATE_PROMPT="true"
 
-ZSH_THEME="ys"
+# Starship owns the prompt; Oh My Zsh still provides plugins and shell helpers.
+ZSH_THEME=""
+
+# zsh-completions must extend fpath before Oh My Zsh runs compinit.
+if [[ -d "$ZSH_CUSTOM/plugins/zsh-completions/src" ]]; then
+    fpath=("$ZSH_CUSTOM/plugins/zsh-completions/src" $fpath)
+fi
+
 plugins=(
     git
     vi-mode
-    zsh-autosuggestions
-    zsh-completions
-    zsh-syntax-highlighting
-    autojump
     fzf
+    direnv
+    fzf-tab
+    zsh-autosuggestions
+    # Keep this last: it must observe widgets registered by other plugins.
+    zsh-syntax-highlighting
 )
 
-
-source $ZSH/oh-my-zsh.sh
-export PATH="$PATH:/usr/bin/"
-export PATH="$PATH:/usr/include/"
+source "$ZSH/oh-my-zsh.sh"
 
 alias gs="git status"
 alias s="tmux"
 alias vim='nvim'
-alias typora="open -a typora"
 
 alias dkps="docker ps"
 alias dkpa="docker ps -a"
@@ -66,33 +82,80 @@ fi
 # export ROS_HOSTNAME=localhost
 # export ROS_MASTER_URI=http://localhost:11311
 
-# for ros2 jazzy
-if [[ -f /opt/ros/jazzy/setup.zsh ]]; then
-    source /opt/ros/jazzy/setup.zsh
+# Load the default ROS 2 workspace for every interactive shell. Keep
+# `ros2_on [workspace]` available for reloading or switching workspaces.
+_dotfiles_ros2_setup_file() {
+    local workspace="${1:-$HOME/ros2_ws}"
+
+    if [[ -f "$workspace/install/setup.zsh" ]]; then
+        REPLY="$workspace/install/setup.zsh"
+    elif [[ -f /opt/ros/jazzy/setup.zsh ]]; then
+        REPLY=/opt/ros/jazzy/setup.zsh
+    else
+        return 1
+    fi
+}
+
+_dotfiles_ros2_completions() {
+    local distro="${ROS_DISTRO:-}"
+    [[ -n "$distro" ]] || return 0
+    [[ "${_DOTFILES_ROS_COMPLETION_DISTRO:-}" == "$distro" ]] && return 0
+
+    local ros2_completion="/opt/ros/$distro/share/ros2cli/environment/ros2-argcomplete.zsh"
+    if [[ -r "$ros2_completion" ]]; then
+        source "$ros2_completion"
+    fi
+
+    if command -v register-python-argcomplete >/dev/null 2>&1 \
+        && command -v colcon >/dev/null 2>&1; then
+        eval "$(register-python-argcomplete colcon)"
+    fi
+
+    typeset -g _DOTFILES_ROS_COMPLETION_DISTRO="$distro"
+}
+
+ros2_on() {
+    local workspace="${1:-$HOME/ros2_ws}"
+    if ! _dotfiles_ros2_setup_file "$workspace"; then
+        print -u2 "未找到 ROS 2 Jazzy 或工作空间环境：$workspace"
+        return 1
+    fi
+
+    source "$REPLY"
+    _dotfiles_ros2_completions
+    print "已加载 ROS 2 环境：$REPLY"
+}
+
+# Prefer the default workspace overlay and fall back to the Jazzy underlay.
+# Stay silent when ROS 2 is not installed so the dotfiles remain portable.
+if _dotfiles_ros2_setup_file "$HOME/ros2_ws"; then
+    source "$REPLY"
+    _dotfiles_ros2_completions
 fi
 
-if [[ -f "$HOME/ros2_ws/install/setup.zsh" ]]; then
-    source "$HOME/ros2_ws/install/setup.zsh"
-fi
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _dotfiles_ros2_completions
 
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/dev_env/bin:$PATH"
-if command -v register-python-argcomplete >/dev/null 2>&1 && command -v ros2 >/dev/null 2>&1; then
-    eval "$(register-python-argcomplete ros2)"
-fi
-
-if command -v register-python-argcomplete >/dev/null 2>&1 && command -v colcon >/dev/null 2>&1; then
-    eval "$(register-python-argcomplete colcon)"
-fi
 alias cw='cd ~/ros2_ws'
 alias cs='cd ~/ros2_ws/src'
 alias cm='cd ~/ros2_ws && colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --symlink-install'
+alias cmt='cd ~/ros2_test && colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --symlink-install --allow-overriding project_bringup'
 alias denv='source ~/dev_env/bin/activate'
 export NVIM_PYTHON_VENV="$HOME/dev_env"
+export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
 
-# export ROSCONSOLE_FORMAT='[${severity}] [${time}] [${node}]: ${message}'
-export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+export RCUTILS_CONSOLE_OUTPUT_FORMAT="[{severity}] [{time}]: {message}"
+
+export LD_LIBRARY_PATH="/usr/local/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
 # export TURTLEBOT3_MODEL=waffle
 # export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models
-export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:$HOME/.gazebo/models
+export GAZEBO_MODEL_PATH="${GAZEBO_MODEL_PATH:+$GAZEBO_MODEL_PATH:}$HOME/.gazebo/models"
+
+if command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init zsh)"
+fi
+
+if command -v starship >/dev/null 2>&1; then
+    eval "$(starship init zsh)"
+fi
