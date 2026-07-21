@@ -41,7 +41,9 @@ run_apt_packages() {
     unzip
     wget
     fontconfig
+    dbus-bin
     fcitx5
+    fcitx5-module-lua
     fcitx5-rime
     fcitx5-config-qt
     fcitx5-frontend-all

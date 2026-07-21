@@ -38,6 +38,8 @@ verify_environment() {
   verify_command "tmux" tmux -V
   verify_command "clangd" clangd --version
   verify_command "cmake-format" cmake-format --version
+  verify_command "Fcitx5 Rime 状态重置插件" test -L "$HOME/.local/share/fcitx5/addon/rime_state_reset.conf"
+  verify_command "Fcitx5 Rime 状态重置脚本" test -L "$HOME/.local/share/fcitx5/lua/rime_state_reset/main.lua"
   verify_command "node" node --version
   verify_command "npm" npm --version
   verify_command "codex" codex --version

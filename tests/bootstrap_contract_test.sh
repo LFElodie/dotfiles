@@ -70,6 +70,8 @@ assert_contains install_scripts/modules/apt_packages.sh "build-essential"
 assert_contains install_scripts/modules/apt_packages.sh "clangd"
 assert_contains install_scripts/modules/apt_packages.sh "cmake-format"
 assert_contains install_scripts/modules/apt_packages.sh "fontconfig"
+assert_contains install_scripts/modules/apt_packages.sh "dbus-bin"
+assert_contains install_scripts/modules/apt_packages.sh "fcitx5-module-lua"
 assert_contains install_scripts/modules/apt_packages.sh "zoxide"
 assert_contains install_scripts/modules/apt_packages.sh "direnv"
 assert_contains install_scripts/modules/apt_packages.sh "git-delta"
@@ -124,6 +126,8 @@ assert_contains install.conf.yaml "~/.local/bin/ros2-ws-sync: ros2/bin/ros2-ws-s
 assert_contains install.conf.yaml "~/.local/bin/ros2-ws-sync-init: ros2/bin/ros2-ws-sync-init"
 assert_contains install.conf.yaml "~/.config/starship.toml: starship/starship.toml"
 assert_contains install.conf.yaml "~/.local/bin/fd: bin/fd"
+assert_contains install.conf.yaml "~/.local/share/fcitx5/addon/rime_state_reset.conf: fcitx5/addon/rime_state_reset.conf"
+assert_contains install.conf.yaml "~/.local/share/fcitx5/lua/rime_state_reset/main.lua: fcitx5/lua/rime_state_reset/main.lua"
 assert_contains install.conf.yaml "~/ros2_ws/.envrc: ros2/envrc"
 assert_contains install.conf.yaml "~/.config/rclone/ros2-ws-bisync-filter.txt: ros2/rclone/ros2-ws-bisync-filter.txt"
 assert_not_contains install.conf.yaml "~/.oh-my-zsh/custom/plugins:"
@@ -170,6 +174,16 @@ assert_contains bin/fd 'exec fdfind "$@"'
 assert_file ranger/plugins/zoxide.py
 [[ ! -e "$ROOT/ranger/plugins/autojump.py" ]] || fail "legacy Ranger autojump plugin should be removed"
 assert_contains ranger/plugins/zoxide.py '["zoxide", "query", "--", self.arg(1)]'
+assert_file fcitx5/addon/rime_state_reset.conf
+assert_contains fcitx5/addon/rime_state_reset.conf "Type=Lua"
+assert_contains fcitx5/addon/rime_state_reset.conf "OnDemand=False"
+assert_contains fcitx5/addon/rime_state_reset.conf "Library=main.lua"
+assert_file fcitx5/lua/rime_state_reset/main.lua
+assert_contains fcitx5/lua/rime_state_reset/main.lua "fcitx.EventType.KeyEvent"
+assert_contains fcitx5/lua/rime_state_reset/main.lua "fcitx.EventType.InputMethodActivated"
+assert_contains fcitx5/lua/rime_state_reset/main.lua 'state == fcitx.KeyState.Ctrl'
+assert_contains fcitx5/lua/rime_state_reset/main.lua 'input_method == "rime"'
+assert_contains fcitx5/lua/rime_state_reset/main.lua "org.fcitx.Fcitx.Rime1.SetAsciiMode boolean:false"
 assert_contains set_git.sh "core.pager delta"
 assert_contains set_git.sh "delta.line-numbers true"
 assert_contains set_git.sh "merge.conflictStyle zdiff3"
