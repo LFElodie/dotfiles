@@ -90,6 +90,7 @@ verify_environment() {
   verify_required "dev_env yapf" test -x "$HOME/dev_env/bin/yapf"
   verify_required "dev_env pyrefly" test -x "$HOME/dev_env/bin/pyrefly"
   verify_required "dev_env ruff" test -x "$HOME/dev_env/bin/ruff"
+  verify_required "dev_env dependency consistency" "$HOME/dev_env/bin/python" -m pip check
   verify_required "nvim" nvim --version
   verify_required "tmux" tmux -V
   verify_required "clangd" clangd --version
