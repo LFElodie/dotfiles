@@ -7,7 +7,7 @@ source "$MODULE_DIR/../lib/common.sh"
 RIME_REPO_URL="https://github.com/iDvel/rime-ice"
 RIME_USER_DIR="$HOME/.local/share/fcitx5/rime"
 
-setup_repo() {
+setup_rime_repo() {
   mkdir -p "$(dirname "$RIME_USER_DIR")"
 
   if [[ -d "$RIME_USER_DIR/.git" ]]; then
@@ -49,7 +49,7 @@ main() {
   local action="${1:-}"
   case "$action" in
     setup_repo)
-      setup_repo
+      setup_rime_repo
       ;;
     deploy)
       deploy_rime

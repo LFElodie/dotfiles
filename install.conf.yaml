@@ -6,16 +6,11 @@
 
 - clean: ['~']
 
-- shell:
-  - [git submodule update --init --recursive, Installing submodules]
-  - [bash install_scripts/modules/zsh_plugins.sh setup_repo, Setup zsh plugins]
-  - [bash install_scripts/modules/fcitx5_rime.sh setup_repo, Setup rime-ice repo]
-
 - link:
     ~/.pam_environment: pam_environment
     ~/.tmux.conf: tmux.conf
     ~/.zshrc: zsh/zshrc
-    ~/.config/fcitx5/profile: fcitx5/profile
+    ~/.config/environment.d/im.conf: environment/input-method.conf
     ~/.config/fcitx5/config: fcitx5/config
     ~/.local/share/fcitx5/addon/rime_state_reset.conf: fcitx5/addon/rime_state_reset.conf
     ~/.local/share/fcitx5/lua/rime_state_reset/main.lua: fcitx5/lua/rime_state_reset/main.lua
@@ -29,6 +24,7 @@
     ~/.config/kitty/light-theme.auto.conf: kitty/gruvbox-light.conf
     ~/.config/kitty/no-preference-theme.auto.conf: kitty/gruvbox-light.conf
     ~/.config/kitty/dark-theme.auto.conf: kitty/gruvbox-dark.conf
+    ~/.config/xdg-terminals.list: kitty/xdg-terminals.list
     ~/.config/starship.toml: starship/starship.toml
     ~/.gitignore_global: gitignore_global
     ~/.local/bin/obsidian-sync: obsidian/bin/obsidian-sync
@@ -42,10 +38,3 @@
     ~/.config/systemd/user/obsidian-sync-on-login.service: obsidian/systemd/user/obsidian-sync-on-login.service
     ~/.codex/AGENTS.md: codex/AGENTS.md
     ~/.ssh/config: ssh/config
-
-- shell:
-  - [bash install_scripts/modules/fcitx5_rime.sh deploy, Deploy rime-ice]
-  - [bash set_git.sh, Setting git]
-  - [bash install_scripts/install_font.sh, Install nerd font]
-  - [bash obsidian/setup_obsidian_sync.sh, Setup Obsidian sync service]
-  # - [bash install_scripts/setup_mirrors.sh, Setup apt/pip mirrors]

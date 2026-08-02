@@ -4,7 +4,7 @@ MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$MODULE_DIR/../lib/common.sh"
 
 run_dotbot() {
-  (cd "$DOTFILES_ROOT" && ./install)
+  bash "$DOTFILES_ROOT/install_scripts/run_dotbot.sh"
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then

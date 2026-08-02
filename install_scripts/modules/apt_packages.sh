@@ -7,7 +7,6 @@ run_apt_packages() {
   local packages=(
     zsh
     tmux
-    terminator
     neovim
     ranger
     git
@@ -30,6 +29,7 @@ run_apt_packages() {
     zoxide
     direnv
     git-delta
+    less
     htop
     xclip
     gnome-tweaks

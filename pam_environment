@@ -1,3 +1,5 @@
 GTK_IM_MODULE DEFAULT=fcitx
 QT_IM_MODULE  DEFAULT=fcitx
 XMODIFIERS    DEFAULT=\@im=fcitx
+# Kitty 通过 GLFW 的 IBus 接口接入 X11 下的 Fcitx5。
+GLFW_IM_MODULE DEFAULT=ibus

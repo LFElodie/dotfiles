@@ -1,33 +1,31 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-set -e
+readonly DOTFILES_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-CONFIG="install.conf.yaml"
-DOTBOT_DIR="dotbot"
-DOTBOT_BREW_DIR="dotbot-brew"
+show_help() {
+  cat <<'EOF'
+用法：
+  ./install               完整安装或更新环境，并部署 dotfiles
+  ./install --links-only  仅刷新 Dotbot 管理的配置
+  ./install --help        显示帮助
+EOF
+}
 
-DOTBOT_BIN="bin/dotbot"
-BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-cd "${BASEDIR}"
-git -C "${DOTBOT_DIR}" submodule sync --quiet --recursive
-git submodule sync --quiet --recursive
-
-SUBMODULES=("${DOTBOT_DIR}")
-if git ls-files --stage -- "${DOTBOT_BREW_DIR}" | grep -q '^160000 '; then
-  SUBMODULES+=("${DOTBOT_BREW_DIR}")
-fi
-
-git submodule update --init --recursive "${SUBMODULES[@]}"
-
-DOTBOT_ARGS=(
-  -d "${BASEDIR}"
-  -c "${CONFIG}"
-  "${@}"
-)
-
-if [[ -d "${BASEDIR}/${DOTBOT_BREW_DIR}" ]]; then
-  DOTBOT_ARGS=(--plugin-dir "${DOTBOT_BREW_DIR}" "${DOTBOT_ARGS[@]}")
-fi
-
-"${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" "${DOTBOT_ARGS[@]}"
+case "${1:-}" in
+  --links-only)
+    shift
+    exec bash "$DOTFILES_ROOT/install_scripts/run_dotbot.sh" "$@"
+    ;;
+  --help|-h)
+    show_help
+    ;;
+  "")
+    exec bash "$DOTFILES_ROOT/install_scripts/bootstrap_ubuntu24.sh"
+    ;;
+  *)
+    printf '未知参数：%s\n' "$1" >&2
+    show_help >&2
+    exit 2
+    ;;
+esac
